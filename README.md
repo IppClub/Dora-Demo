@@ -10,7 +10,7 @@ Welcome to the **Dora SSR Game Demos** repository! This repository showcases var
 
 Dora SSR is a versatile game engine designed for quick 2D game development on multiple platforms. With a built-in development toolchain, Dora SSR supports scripting with Lua and several Lua-transpiled languages, such as Teal, Yuescript, and TypeScript. The engine enables direct game development on mobile devices, open-source handheld consoles, and more, making it an ideal choice for creators focused on accessibility and efficiency.
 
-For more details on Dora SSR, visit the [Dora SSR repository](https://github/ippclub/Dora-SSR).
+For more details on Dora SSR, visit the [Dora SSR repository](https://github.com/ippclub/Dora-SSR).
 
 ## Demos
 

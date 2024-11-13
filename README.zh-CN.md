@@ -10,7 +10,7 @@
 
 &emsp;&emsp;Dora SSR 是一个多功能的游戏引擎，专为在多平台上快速开发游戏而设计。Dora SSR 内置了易用的开发工具链，支持 Lua 及多种 Lua 转译语言（如 Teal、Yuescript 和 TypeScript）脚本编写。该引擎支持在移动设备、开源掌机等平台上直接进行游戏开发，是追求易用性与高效性的创作者的理想选择。
 
-&emsp;&emsp;有关 Dora SSR 的更多详情，请访问 [Dora SSR 仓库](https://github/ippclub/Dora-SSR)。
+&emsp;&emsp;有关 Dora SSR 的更多详情，请访问 [Dora SSR 仓库](https://github.com/ippclub/Dora-SSR)。
 
 ## 示例内容
 
@@ -41,7 +41,7 @@
 
 ## 前置需求
 
-- **Dora SSR 引擎**：确保已安装 Dora SSR。安装和设置指南请参考 [Dora SSR 文档](https://dora-ssr.net)。
+- **Dora SSR 引擎**：确保已安装 Dora SSR。安装和设置指南请参考 [Dora SSR 文档](https://dora-ssr.net/zh-Hans)。
 - 掌握 **Lua** 或支持的转译语言（Teal、Yuescript、TypeScript），用于在 Dora SSR 中编写脚本。
 
 ## 贡献
