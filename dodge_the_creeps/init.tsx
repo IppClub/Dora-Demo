@@ -131,17 +131,15 @@ const Player = (world: PhysicsWorld.Type) => {
 	if (!node) error('failed to create player!');
 	node.addTo(world);
 	let x = 0; let y = 0;
-	node.gslot('Input.Up', () => {
-		y = 1;
-		node.angle = 0;
-	});
-	node.gslot('Input.Down', () => {
-		y = -1;
-		node.angle = 180;
-	});
+	node.gslot('Input.Up', () => y = 1);
+	node.gslot('Input.Down', () => y = -1);
 	node.gslot('Input.Left', () => x = -1);
 	node.gslot('Input.Right', () => x = 1);
 	node.loop(() => {
+		const direction = Vec2(x, y).normalize();
+		if (direction.length > 0) {
+			node.angle = -math.deg(math.atan(direction.y, direction.x)) + 90;
+		}
 		const newPos = node.position.add(Vec2(x, y).normalize().mul(10));
 		node.position = newPos.clamp(Vec2(-hw + 40, -hh + 40), Vec2(hw - 40, hh - 40));
 		x = 0; y = 0;
@@ -151,14 +149,14 @@ const Player = (world: PhysicsWorld.Type) => {
 	playAnimation(animNode, Animation.playerGrey_walk);
 };
 
-const Rect = () => <draw-node><rect-shape width={width} height={height} fillColor={0xff4b6b6c}/></draw-node>;
+const Background = () => <draw-node><rect-shape width={width} height={height} fillColor={0xff4b6b6c}/></draw-node>;
 
 const StartUp = () => {
 	inputManager.popContext();
 	inputManager.pushContext('UI');
 	return (
 		<>
-			<Rect/>
+			<Background/>
 			<label fontName='Xolonium-Regular' fontSize={80} text='Dodge the Creeps!' textWidth={400}/>
 			<draw-node y={-150}>
 				<rect-shape width={250} height={80} fillColor={0xff3a3a3a}/>
@@ -181,8 +179,8 @@ const Game = () => {
 	const label = useRef<Label.Type>();
 	Audio.playStream('Audio/House In a Forest Loop.ogg', true);
 	return (
-		<clip-node stencil={<Rect/>}>
-			<Rect/>
+		<clip-node stencil={<Background/>}>
+			<Background/>
 			<physics-world onMount={world => {
 				Player(world);
 				world.once(() => {
@@ -203,7 +201,6 @@ const Game = () => {
 			}}>
 				<contact groupA={0} groupB={0} enabled={false}/>
 				<contact groupA={0} groupB={1} enabled/>
-				<contact groupA={1} groupB={1} enabled/>
 				<body type={BodyMoveType.Static} group={1} onBodyLeave={() => {
 					score++;
 					if (label.current) {

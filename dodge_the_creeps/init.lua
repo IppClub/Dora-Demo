@@ -191,141 +191,144 @@ local function Player(world) -- 112
 	node:gslot( -- 134
 		"Input.Up", -- 134
 		function() -- 134
-			y = 1 -- 135
-			node.angle = 0 -- 136
+			y = 1 -- 134
+			return y -- 134
 		end -- 134
 	) -- 134
-	node:gslot( -- 138
-		"Input.Down", -- 138
-		function() -- 138
-			y = -1 -- 139
-			node.angle = 180 -- 140
-		end -- 138
-	) -- 138
-	node:gslot( -- 142
-		"Input.Left", -- 142
-		function() -- 142
-			x = -1 -- 142
-			return x -- 142
-		end -- 142
-	) -- 142
-	node:gslot( -- 143
-		"Input.Right", -- 143
-		function() -- 143
-			x = 1 -- 143
-			return x -- 143
-		end -- 143
-	) -- 143
-	node:loop(function() -- 144
-		local newPos = node.position:add(Vec2(x, y):normalize():mul(10)) -- 145
-		node.position = newPos:clamp( -- 146
-			Vec2(-hw + 40, -hh + 40), -- 146
-			Vec2(hw - 40, hh - 40) -- 146
-		) -- 146
-		x = 0 -- 147
-		y = 0 -- 147
-		return false -- 148
-	end) -- 144
-	local animNode = Node():addTo(node) -- 150
-	playAnimation(animNode, "playerGrey_walk") -- 151
+	node:gslot( -- 135
+		"Input.Down", -- 135
+		function() -- 135
+			y = -1 -- 135
+			return y -- 135
+		end -- 135
+	) -- 135
+	node:gslot( -- 136
+		"Input.Left", -- 136
+		function() -- 136
+			x = -1 -- 136
+			return x -- 136
+		end -- 136
+	) -- 136
+	node:gslot( -- 137
+		"Input.Right", -- 137
+		function() -- 137
+			x = 1 -- 137
+			return x -- 137
+		end -- 137
+	) -- 137
+	node:loop(function() -- 138
+		local direction = Vec2(x, y):normalize() -- 139
+		if direction.length > 0 then -- 139
+			node.angle = -math.deg(math.atan(direction.y, direction.x)) + 90 -- 141
+		end -- 141
+		local newPos = node.position:add(Vec2(x, y):normalize():mul(10)) -- 143
+		node.position = newPos:clamp( -- 144
+			Vec2(-hw + 40, -hh + 40), -- 144
+			Vec2(hw - 40, hh - 40) -- 144
+		) -- 144
+		x = 0 -- 145
+		y = 0 -- 145
+		return false -- 146
+	end) -- 138
+	local animNode = Node():addTo(node) -- 148
+	playAnimation(animNode, "playerGrey_walk") -- 149
 end -- 112
-local function Rect() -- 154
-	return React.createElement( -- 154
-		"draw-node", -- 154
-		nil, -- 154
-		React.createElement("rect-shape", {width = width, height = height, fillColor = 4283132780}) -- 154
-	) -- 154
+local function Background() -- 152
+	return React.createElement( -- 152
+		"draw-node", -- 152
+		nil, -- 152
+		React.createElement("rect-shape", {width = width, height = height, fillColor = 4283132780}) -- 152
+	) -- 152
+end -- 152
+StartUp = function() -- 154
+	inputManager:popContext() -- 155
+	inputManager:pushContext("UI") -- 156
+	return React.createElement( -- 157
+		React.Fragment, -- 157
+		nil, -- 157
+		React.createElement(Background, nil), -- 157
+		React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Dodge the Creeps!", textWidth = 400}), -- 157
+		React.createElement( -- 157
+			"draw-node", -- 157
+			{y = -150}, -- 157
+			React.createElement("rect-shape", {width = 250, height = 80, fillColor = 4282006074}), -- 157
+			React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 60, text = "Start"}), -- 157
+			React.createElement( -- 157
+				"node", -- 157
+				{ -- 157
+					width = 250, -- 157
+					height = 80, -- 157
+					onTapped = function() return emit("Input.Start") end, -- 157
+					onMount = function(node) -- 157
+						node:gslot( -- 165
+							"Input.Start", -- 165
+							function() -- 165
+								Director.entry:removeAllChildren() -- 166
+								toNode(React.createElement(Game, nil)) -- 167
+							end -- 165
+						) -- 165
+					end -- 164
+				} -- 164
+			) -- 164
+		) -- 164
+	) -- 164
 end -- 154
-StartUp = function() -- 156
-	inputManager:popContext() -- 157
-	inputManager:pushContext("UI") -- 158
-	return React.createElement( -- 159
-		React.Fragment, -- 159
-		nil, -- 159
-		React.createElement(Rect, nil), -- 159
-		React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Dodge the Creeps!", textWidth = 400}), -- 159
-		React.createElement( -- 159
-			"draw-node", -- 159
-			{y = -150}, -- 159
-			React.createElement("rect-shape", {width = 250, height = 80, fillColor = 4282006074}), -- 159
-			React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 60, text = "Start"}), -- 159
-			React.createElement( -- 159
-				"node", -- 159
-				{ -- 159
-					width = 250, -- 159
-					height = 80, -- 159
-					onTapped = function() return emit("Input.Start") end, -- 159
-					onMount = function(node) -- 159
-						node:gslot( -- 167
-							"Input.Start", -- 167
-							function() -- 167
-								Director.entry:removeAllChildren() -- 168
-								toNode(React.createElement(Game, nil)) -- 169
-							end -- 167
-						) -- 167
-					end -- 166
-				} -- 166
-			) -- 166
-		) -- 166
-	) -- 166
-end -- 156
-Game = function() -- 177
-	inputManager:popContext() -- 178
-	inputManager:pushContext("Game") -- 179
-	local score = 0 -- 180
-	local label = useRef() -- 181
-	Audio:playStream("Audio/House In a Forest Loop.ogg", true) -- 182
-	return React.createElement( -- 183
-		"clip-node", -- 183
-		{stencil = React.createElement(Rect, nil)}, -- 183
-		React.createElement(Rect, nil), -- 183
-		React.createElement( -- 183
-			"physics-world", -- 183
-			{onMount = function(world) -- 183
-				Player(world) -- 187
-				world:once(function() -- 188
-					local msg = toNode(React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Get Ready!", y = 200})) -- 189
-					sleep(1) -- 192
-					if msg ~= nil then -- 192
-						msg:removeFromParent() -- 193
+Game = function() -- 175
+	inputManager:popContext() -- 176
+	inputManager:pushContext("Game") -- 177
+	local score = 0 -- 178
+	local label = useRef() -- 179
+	Audio:playStream("Audio/House In a Forest Loop.ogg", true) -- 180
+	return React.createElement( -- 181
+		"clip-node", -- 181
+		{stencil = React.createElement(Background, nil)}, -- 181
+		React.createElement(Background, nil), -- 181
+		React.createElement( -- 181
+			"physics-world", -- 181
+			{onMount = function(world) -- 181
+				Player(world) -- 185
+				world:once(function() -- 186
+					local msg = toNode(React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Get Ready!", y = 200})) -- 187
+					sleep(1) -- 190
+					if msg ~= nil then -- 190
+						msg:removeFromParent() -- 191
+					end -- 191
+					if label.current then -- 191
+						label.current.visible = true -- 193
 					end -- 193
-					if label.current then -- 193
-						label.current.visible = true -- 195
-					end -- 195
-					world:loop(function() -- 197
-						sleep(0.5) -- 198
-						Enemy(world, score) -- 199
-						return false -- 200
-					end) -- 197
-				end) -- 188
-			end}, -- 186
-			React.createElement("contact", {groupA = 0, groupB = 0, enabled = false}), -- 186
-			React.createElement("contact", {groupA = 0, groupB = 1, enabled = true}), -- 186
-			React.createElement("contact", {groupA = 1, groupB = 1, enabled = true}), -- 186
-			React.createElement( -- 186
-				"body", -- 186
-				{ -- 186
-					type = "Static", -- 186
-					group = 1, -- 186
-					onBodyLeave = function() -- 186
-						score = score + 1 -- 208
-						if label.current then -- 208
-							label.current.text = tostring(score) -- 210
-						end -- 210
-					end -- 207
-				}, -- 207
-				React.createElement("rect-fixture", {sensorTag = 0, width = width, height = height}) -- 207
-			) -- 207
-		), -- 207
-		React.createElement("label", { -- 207
-			ref = label, -- 207
-			fontName = "Xolonium-Regular", -- 207
-			fontSize = 60, -- 207
-			text = "0", -- 207
-			y = 300, -- 207
-			visible = false -- 207
-		}) -- 207
-	) -- 207
-end -- 177
-toNode(React.createElement(StartUp, nil)) -- 221
-return ____exports -- 221
+					world:loop(function() -- 195
+						sleep(0.5) -- 196
+						Enemy(world, score) -- 197
+						return false -- 198
+					end) -- 195
+				end) -- 186
+			end}, -- 184
+			React.createElement("contact", {groupA = 0, groupB = 0, enabled = false}), -- 184
+			React.createElement("contact", {groupA = 0, groupB = 1, enabled = true}), -- 184
+			React.createElement( -- 184
+				"body", -- 184
+				{ -- 184
+					type = "Static", -- 184
+					group = 1, -- 184
+					onBodyLeave = function() -- 184
+						score = score + 1 -- 205
+						if label.current then -- 205
+							label.current.text = tostring(score) -- 207
+						end -- 207
+					end -- 204
+				}, -- 204
+				React.createElement("rect-fixture", {sensorTag = 0, width = width, height = height}) -- 204
+			) -- 204
+		), -- 204
+		React.createElement("label", { -- 204
+			ref = label, -- 204
+			fontName = "Xolonium-Regular", -- 204
+			fontSize = 60, -- 204
+			text = "0", -- 204
+			y = 300, -- 204
+			visible = false -- 204
+		}) -- 204
+	) -- 204
+end -- 175
+toNode(React.createElement(StartUp, nil)) -- 218
+return ____exports -- 218
