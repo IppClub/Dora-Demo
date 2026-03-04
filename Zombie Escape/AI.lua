@@ -1,309 +1,308 @@
 -- [yue]: AI.yue
-local _module_0 = Dora.Platformer -- 1
-local Data = _module_0.Data -- 1
-local _module_1 = Dora.Platformer.Decision -- 1
-local Sel = _module_1.Sel -- 1
-local Seq = _module_1.Seq -- 1
-local Con = _module_1.Con -- 1
-local Unit = _module_0.Unit -- 1
-local Vec2 = Dora.Vec2 -- 1
-local Act = _module_1.Act -- 1
-local Reject = _module_1.Reject -- 1
-local math = _G.math -- 1
-local Behave = _module_1.Behave -- 1
-local AI = _module_1.AI -- 1
-local App = Dora.App -- 1
-local Accept = _module_1.Accept -- 1
-local Group = Dora.Group -- 1
+local _ENV = Dora(Dora.Platformer, Dora.Platformer.Decision) -- 9
 local BT = require("Platformer").Behavior -- 13
-local Store = Data.store -- 15
-local rangeAttack = Sel({ -- 18
-	Seq({ -- 19
-		Con("attack path blocked", function(self) -- 19
-			local sensor = self:getSensorByTag(Unit.AttackSensorTag) -- 20
-			if sensor.sensedBodies:each(function(body) -- 21
-				return body.group == Data.groupTerrain and (self.x > body.x) ~= self.faceRight and body.tag == "Obstacle" -- 24
-			end) then -- 21
-				local faceObstacle = true -- 25
-				local start = self.position -- 26
-				local stop = Vec2(start.x + (self.faceRight and 1 or -1) * self.unitDef.attackRange.width, start.y) -- 27
-				Store.world:raycast(start, stop, true, function(b) -- 28
-					if b.group == Data.groupDetection then -- 29
-						return false -- 29
-					end -- 29
-					if Data:isEnemy(self, b) then -- 30
-						faceObstacle = false -- 30
+local Data <const> = Data -- 14
+local Sel <const> = Sel -- 14
+local Seq <const> = Seq -- 14
+local Con <const> = Con -- 14
+local Unit <const> = Unit -- 14
+local Vec2 <const> = Vec2 -- 14
+local Act <const> = Act -- 14
+local Reject <const> = Reject -- 14
+local math <const> = math -- 14
+local Behave <const> = Behave -- 14
+local AI <const> = AI -- 14
+local App <const> = App -- 14
+local Accept <const> = Accept -- 14
+local Group <const> = Group -- 14
+local Store = Data.store -- 16
+local rangeAttack = Sel({ -- 19
+	Seq({ -- 20
+		Con("attack path blocked", function(self) -- 20
+			local sensor = self:getSensorByTag(Unit.AttackSensorTag) -- 21
+			if sensor.sensedBodies:each(function(body) -- 22
+				return body.group == Data.groupTerrain and (self.x > body.x) ~= self.faceRight and body.tag == "Obstacle" -- 23
+			end) then -- 22
+				local faceObstacle = true -- 26
+				local start = self.position -- 27
+				local stop = Vec2(start.x + (self.faceRight and 1 or -1) * self.unitDef.attackRange.width, start.y) -- 28
+				Store.world:raycast(start, stop, true, function(b) -- 29
+					if b.group == Data.groupDetection then -- 30
+						return false -- 30
 					end -- 30
-					return true -- 31
-				end) -- 28
-				return faceObstacle -- 32
-			else -- 33
-				return false -- 33
-			end -- 21
-		end), -- 19
-		Act("jump"), -- 34
-		Reject() -- 35
-	}), -- 18
-	Act("rangeAttack") -- 37
-}) -- 17
-local walk = Sel({ -- 41
-	Seq({ -- 42
-		Con("obstacles ahead", function(self) -- 42
-			local start = self.position -- 43
-			local stop = Vec2(start.x + (self.faceRight and 140 or -140), start.y) -- 44
-			return Store.world:raycast(start, stop, false, function(b, p) -- 45
-				if b.group == Data.groupTerrain and b.tag == "Obstacle" then -- 46
-					self.data.obstacleDistance = math.abs(p.x - start.x) -- 47
-					return true -- 48
-				else -- 49
-					return false -- 49
-				end -- 46
-			end) -- 49
-		end), -- 42
-		Sel({ -- 51
-			Seq({ -- 52
-				Con("obstacle distance <= 80", function(self) -- 52
-					return self.data.obstacleDistance <= 80 -- 52
-				end), -- 52
-				Behave("backJump", BT.Seq({ -- 54
-					BT.Act("turn"), -- 54
-					BT.Countdown(0.3, BT.Act("walk")), -- 55
-					BT.Act("turn"), -- 56
-					BT.Countdown(0.1, BT.Act("walk")), -- 57
-					BT.Act("jump") -- 58
-				})) -- 53
-			}), -- 51
-			Seq({ -- 62
-				Con("has forward speed", function(self) -- 62
-					return math.abs(self.velocityX) > 10 -- 62
-				end), -- 62
-				Act("jump") -- 63
-			}) -- 61
-		}) -- 50
-	}), -- 41
-	Act("walk") -- 67
-}) -- 40
-local fightDecision = Seq({ -- 71
-	Con("see enemy", function() -- 71
-		return (AI:getNearestUnit("Enemy") ~= nil) -- 71
-	end), -- 71
-	Sel({ -- 73
-		Seq({ -- 74
-			Con("need evade", function(self) -- 74
-				if not self:getAction("rangeAttack" or not self.onSurface) then -- 75
-					return false -- 75
-				end -- 75
-				local evadeLeftEnemy = false -- 76
-				local evadeRightEnemy = false -- 77
-				local sensor = self:getSensorByTag(Unit.AttackSensorTag) -- 78
-				sensor.sensedBodies:each(function(body) -- 79
-					if Data:isEnemy(self, body) then -- 80
-						local distance = math.abs(self.x - body.x) -- 81
-						if distance < 80 then -- 82
-							evadeRightEnemy = false -- 83
-							evadeLeftEnemy = false -- 84
-							return true -- 85
-						elseif distance < 200 then -- 86
-							if body.x > self.x then -- 87
-								evadeRightEnemy = true -- 87
-							end -- 87
-							if body.x <= self.x then -- 88
-								evadeLeftEnemy = true -- 88
+					if Data:isEnemy(self, b) then -- 31
+						faceObstacle = false -- 31
+					end -- 31
+					return true -- 32
+				end) -- 29
+				return faceObstacle -- 33
+			else -- 34
+				return false -- 34
+			end -- 22
+		end), -- 20
+		Act("jump"), -- 35
+		Reject() -- 36
+	}), -- 19
+	Act("rangeAttack") -- 38
+}) -- 18
+local walk = Sel({ -- 42
+	Seq({ -- 43
+		Con("obstacles ahead", function(self) -- 43
+			local start = self.position -- 44
+			local stop = Vec2(start.x + (self.faceRight and 140 or -140), start.y) -- 45
+			return Store.world:raycast(start, stop, false, function(b, p) -- 46
+				if b.group == Data.groupTerrain and b.tag == "Obstacle" then -- 47
+					self.data.obstacleDistance = math.abs(p.x - start.x) -- 48
+					return true -- 49
+				else -- 50
+					return false -- 50
+				end -- 47
+			end) -- 46
+		end), -- 43
+		Sel({ -- 52
+			Seq({ -- 53
+				Con("obstacle distance <= 80", function(self) -- 53
+					return self.data.obstacleDistance <= 80 -- 53
+				end), -- 53
+				Behave("backJump", BT.Seq({ -- 55
+					BT.Act("turn"), -- 55
+					BT.Countdown(0.3, BT.Act("walk")), -- 56
+					BT.Act("turn"), -- 57
+					BT.Countdown(0.1, BT.Act("walk")), -- 58
+					BT.Act("jump") -- 59
+				})) -- 54
+			}), -- 52
+			Seq({ -- 63
+				Con("has forward speed", function(self) -- 63
+					return math.abs(self.velocityX) > 10 -- 63
+				end), -- 63
+				Act("jump") -- 64
+			}) -- 62
+		}) -- 51
+	}), -- 42
+	Act("walk") -- 68
+}) -- 41
+local fightDecision = Seq({ -- 72
+	Con("see enemy", function() -- 72
+		return (AI:getNearestUnit("Enemy") ~= nil) -- 72
+	end), -- 72
+	Sel({ -- 74
+		Seq({ -- 75
+			Con("need evade", function(self) -- 75
+				if not self:getAction("rangeAttack" or not self.onSurface) then -- 76
+					return false -- 76
+				end -- 76
+				local evadeLeftEnemy = false -- 77
+				local evadeRightEnemy = false -- 78
+				local sensor = self:getSensorByTag(Unit.AttackSensorTag) -- 79
+				sensor.sensedBodies:each(function(body) -- 80
+					if Data:isEnemy(self, body) then -- 81
+						local distance = math.abs(self.x - body.x) -- 82
+						if distance < 80 then -- 83
+							evadeRightEnemy = false -- 84
+							evadeLeftEnemy = false -- 85
+							return true -- 86
+						elseif distance < 200 then -- 87
+							if body.x > self.x then -- 88
+								evadeRightEnemy = true -- 88
 							end -- 88
-						end -- 82
-					end -- 80
-				end) -- 79
-				local needEvade = not (evadeLeftEnemy == evadeRightEnemy) and math.abs(self.x) < 1000 -- 89
-				if needEvade then -- 90
-					self.data.evadeRight = evadeRightEnemy -- 90
-				end -- 90
-				return needEvade -- 91
-			end), -- 74
-			Sel({ -- 93
-				Seq({ -- 94
-					Con("face enemy", function(self) -- 94
-						return self.data.evadeRight == self.faceRight -- 94
-					end), -- 94
-					Act("turn"), -- 95
-					walk -- 96
-				}), -- 93
-				walk -- 98
-			}) -- 92
-		}), -- 73
-		Seq({ -- 102
-			Con("not facing nearest enemy", function(self) -- 102
-				local enemy = AI:getNearestUnit("Enemy") -- 103
-				return (self.x > enemy.x) == self.faceRight -- 104
-			end), -- 102
-			Act("turn") -- 105
-		}), -- 101
-		Seq({ -- 108
-			Con("enemy in attack range", function() -- 108
-				local enemy = AI:getNearestUnit("Enemy") -- 109
-				local attackUnits = AI:getUnitsInAttackRange() -- 110
-				return attackUnits and attackUnits:contains(enemy) or false -- 111
-			end), -- 108
-			Sel({ -- 113
-				rangeAttack, -- 113
-				Act("meleeAttack") -- 114
-			}) -- 112
-		}), -- 107
-		Seq({ -- 118
-			Con("wanna jump", function() -- 118
-				return App.rand % 5 == 0 -- 118
-			end), -- 118
-			Act("jump") -- 119
-		}), -- 117
-		walk -- 121
-	}) -- 72
-}) -- 70
-Store["AI_Zombie"] = Sel({ -- 126
-	Seq({ -- 127
-		Con("is dead", function(self) -- 127
-			return self.entity.hp <= 0 -- 127
-		end), -- 127
-		Accept() -- 128
-	}), -- 126
-	Seq({ -- 131
-		Con("not entered", function(self) -- 131
-			return not self.data.entered -- 131
-		end), -- 131
-		Act("groundEntrance") -- 132
-	}), -- 130
-	fightDecision, -- 134
-	Seq({ -- 136
-		Con("need stop", function(self) -- 136
-			return not self:isDoing("idle") -- 136
-		end), -- 136
-		Act("cancel"), -- 137
-		Act("idle") -- 138
-	}) -- 135
-}) -- 125
-local playerGroup = Group({ -- 142
-	"player" -- 142
-}) -- 142
-Store["AI_KidFollow"] = Sel({ -- 145
-	Seq({ -- 146
-		Con("is dead", function(self) -- 146
-			return self.entity.hp <= 0 -- 146
-		end), -- 146
-		Accept() -- 147
-	}), -- 145
-	fightDecision, -- 149
-	Seq({ -- 151
-		Con("is falling", function(self) -- 151
-			return not self.onSurface -- 151
-		end), -- 151
-		Act("fallOff") -- 152
-	}), -- 150
-	Seq({ -- 155
-		Con("follow target is away", function(self) -- 155
-			local target = playerGroup:find(function(e) -- 156
-				return e.unit ~= self -- 156
-			end) -- 156
-			if target then -- 156
-				self.data.followTarget = target.unit -- 157
-				return math.abs(self.x - target.unit.x) > 50 -- 158
-			else -- 159
-				return false -- 159
-			end -- 156
-		end), -- 155
-		Sel({ -- 161
-			Seq({ -- 162
-				Con("not facing target", function(self) -- 162
-					return (self.x > self.data.followTarget.x) == self.faceRight -- 162
-				end), -- 162
-				Act("turn") -- 163
-			}), -- 161
-			Accept() -- 165
-		}), -- 160
-		walk -- 167
-	}), -- 154
-	Seq({ -- 170
-		Con("need stop", function(self) -- 170
-			return not self:isDoing("idle") -- 170
-		end), -- 170
-		Act("cancel"), -- 171
-		Act("idle") -- 172
-	}) -- 169
-}) -- 144
-Store["AI_KidSearch"] = Sel({ -- 177
-	Seq({ -- 178
-		Con("is dead", function(self) -- 178
-			return self.entity.hp <= 0 -- 178
-		end), -- 178
-		Accept() -- 179
-	}), -- 177
-	fightDecision, -- 181
-	Seq({ -- 183
-		Con("is falling", function(self) -- 183
-			return not self.onSurface -- 183
-		end), -- 183
-		Act("fallOff") -- 184
-	}), -- 182
-	Seq({ -- 187
-		Con("reach search limit", function(self) -- 187
-			return math.abs(self.x) > 1150 and ((self.x > 0) == self.faceRight) -- 187
-		end), -- 187
-		Act("turn") -- 188
-	}), -- 186
-	Seq({ -- 191
-		Con("continue search", function() -- 191
-			return true -- 191
-		end), -- 191
-		walk -- 192
-	}) -- 190
-}) -- 176
-Store["AI_PlayerControl"] = Sel({ -- 197
-	Seq({ -- 198
-		Con("is dead", function(self) -- 198
-			return self.entity.hp <= 0 -- 198
-		end), -- 198
-		Accept() -- 199
-	}), -- 197
-	Seq({ -- 202
-		Seq({ -- 203
-			Con("move key down", function(self) -- 203
-				return not (self.data.keyLeft and self.data.keyRight) and ((self.data.keyLeft and self.faceRight) or (self.data.keyRight and not self.faceRight)) -- 208
-			end), -- 203
-			Act("turn") -- 209
-		}), -- 202
-		Reject() -- 211
-	}), -- 201
-	Seq({ -- 214
-		Con("attack key down", function(self) -- 214
-			return self.data.keyShoot -- 214
-		end), -- 214
-		Sel({ -- 216
-			Act("meleeAttack"), -- 216
-			Act("rangeAttack") -- 217
-		}) -- 215
-	}), -- 213
-	Sel({ -- 221
-		Seq({ -- 222
-			Con("is falling", function(self) -- 222
-				return not self.onSurface -- 222
-			end), -- 222
-			Act("fallOff") -- 223
-		}), -- 221
-		Seq({ -- 226
-			Con("jump key down", function(self) -- 226
-				return self.data.keyUp -- 226
-			end), -- 226
-			Act("jump") -- 227
-		}) -- 225
-	}), -- 220
-	Seq({ -- 231
-		Con("move key down", function(self) -- 231
-			return self.data.keyLeft or self.data.keyRight -- 231
-		end), -- 231
-		Act("walk") -- 232
-	}), -- 230
-	Seq({ -- 235
-		Con("need stop", function(self) -- 235
-			return not self:isDoing("idle") -- 235
-		end), -- 235
-		Act("cancel"), -- 236
-		Act("idle") -- 237
-	}) -- 234
-}) -- 196
+							if body.x <= self.x then -- 89
+								evadeLeftEnemy = true -- 89
+							end -- 89
+						end -- 83
+					end -- 81
+				end) -- 80
+				local needEvade = not (evadeLeftEnemy == evadeRightEnemy) and math.abs(self.x) < 1000 -- 90
+				if needEvade then -- 91
+					self.data.evadeRight = evadeRightEnemy -- 91
+				end -- 91
+				return needEvade -- 92
+			end), -- 75
+			Sel({ -- 94
+				Seq({ -- 95
+					Con("face enemy", function(self) -- 95
+						return self.data.evadeRight == self.faceRight -- 95
+					end), -- 95
+					Act("turn"), -- 96
+					walk -- 97
+				}), -- 94
+				walk -- 99
+			}) -- 93
+		}), -- 74
+		Seq({ -- 103
+			Con("not facing nearest enemy", function(self) -- 103
+				local enemy = AI:getNearestUnit("Enemy") -- 104
+				return (self.x > enemy.x) == self.faceRight -- 105
+			end), -- 103
+			Act("turn") -- 106
+		}), -- 102
+		Seq({ -- 109
+			Con("enemy in attack range", function() -- 109
+				local enemy = AI:getNearestUnit("Enemy") -- 110
+				local attackUnits = AI:getUnitsInAttackRange() -- 111
+				return attackUnits and attackUnits:contains(enemy) or false -- 112
+			end), -- 109
+			Sel({ -- 114
+				rangeAttack, -- 114
+				Act("meleeAttack") -- 115
+			}) -- 113
+		}), -- 108
+		Seq({ -- 119
+			Con("wanna jump", function() -- 119
+				return App.rand % 5 == 0 -- 119
+			end), -- 119
+			Act("jump") -- 120
+		}), -- 118
+		walk -- 122
+	}) -- 73
+}) -- 71
+Store["AI_Zombie"] = Sel({ -- 127
+	Seq({ -- 128
+		Con("is dead", function(self) -- 128
+			return self.entity.hp <= 0 -- 128
+		end), -- 128
+		Accept() -- 129
+	}), -- 127
+	Seq({ -- 132
+		Con("not entered", function(self) -- 132
+			return not self.data.entered -- 132
+		end), -- 132
+		Act("groundEntrance") -- 133
+	}), -- 131
+	fightDecision, -- 135
+	Seq({ -- 137
+		Con("need stop", function(self) -- 137
+			return not self:isDoing("idle") -- 137
+		end), -- 137
+		Act("cancel"), -- 138
+		Act("idle") -- 139
+	}) -- 136
+}) -- 126
+local playerGroup = Group({ -- 143
+	"player" -- 143
+}) -- 143
+Store["AI_KidFollow"] = Sel({ -- 146
+	Seq({ -- 147
+		Con("is dead", function(self) -- 147
+			return self.entity.hp <= 0 -- 147
+		end), -- 147
+		Accept() -- 148
+	}), -- 146
+	fightDecision, -- 150
+	Seq({ -- 152
+		Con("is falling", function(self) -- 152
+			return not self.onSurface -- 152
+		end), -- 152
+		Act("fallOff") -- 153
+	}), -- 151
+	Seq({ -- 156
+		Con("follow target is away", function(self) -- 156
+			local target = playerGroup:find(function(e) -- 157
+				return e.unit ~= self -- 157
+			end) -- 157
+			if target then -- 157
+				self.data.followTarget = target.unit -- 158
+				return math.abs(self.x - target.unit.x) > 50 -- 159
+			else -- 160
+				return false -- 160
+			end -- 157
+		end), -- 156
+		Sel({ -- 162
+			Seq({ -- 163
+				Con("not facing target", function(self) -- 163
+					return (self.x > self.data.followTarget.x) == self.faceRight -- 163
+				end), -- 163
+				Act("turn") -- 164
+			}), -- 162
+			Accept() -- 166
+		}), -- 161
+		walk -- 168
+	}), -- 155
+	Seq({ -- 171
+		Con("need stop", function(self) -- 171
+			return not self:isDoing("idle") -- 171
+		end), -- 171
+		Act("cancel"), -- 172
+		Act("idle") -- 173
+	}) -- 170
+}) -- 145
+Store["AI_KidSearch"] = Sel({ -- 178
+	Seq({ -- 179
+		Con("is dead", function(self) -- 179
+			return self.entity.hp <= 0 -- 179
+		end), -- 179
+		Accept() -- 180
+	}), -- 178
+	fightDecision, -- 182
+	Seq({ -- 184
+		Con("is falling", function(self) -- 184
+			return not self.onSurface -- 184
+		end), -- 184
+		Act("fallOff") -- 185
+	}), -- 183
+	Seq({ -- 188
+		Con("reach search limit", function(self) -- 188
+			return math.abs(self.x) > 1150 and ((self.x > 0) == self.faceRight) -- 188
+		end), -- 188
+		Act("turn") -- 189
+	}), -- 187
+	Seq({ -- 192
+		Con("continue search", function() -- 192
+			return true -- 192
+		end), -- 192
+		walk -- 193
+	}) -- 191
+}) -- 177
+Store["AI_PlayerControl"] = Sel({ -- 198
+	Seq({ -- 199
+		Con("is dead", function(self) -- 199
+			return self.entity.hp <= 0 -- 199
+		end), -- 199
+		Accept() -- 200
+	}), -- 198
+	Seq({ -- 203
+		Seq({ -- 204
+			Con("move key down", function(self) -- 204
+				return not (self.data.keyLeft and self.data.keyRight) and ((self.data.keyLeft and self.faceRight) or (self.data.keyRight and not self.faceRight)) -- 205
+			end), -- 204
+			Act("turn") -- 210
+		}), -- 203
+		Reject() -- 212
+	}), -- 202
+	Seq({ -- 215
+		Con("attack key down", function(self) -- 215
+			return self.data.keyShoot -- 215
+		end), -- 215
+		Sel({ -- 217
+			Act("meleeAttack"), -- 217
+			Act("rangeAttack") -- 218
+		}) -- 216
+	}), -- 214
+	Sel({ -- 222
+		Seq({ -- 223
+			Con("is falling", function(self) -- 223
+				return not self.onSurface -- 223
+			end), -- 223
+			Act("fallOff") -- 224
+		}), -- 222
+		Seq({ -- 227
+			Con("jump key down", function(self) -- 227
+				return self.data.keyUp -- 227
+			end), -- 227
+			Act("jump") -- 228
+		}) -- 226
+	}), -- 221
+	Seq({ -- 232
+		Con("move key down", function(self) -- 232
+			return self.data.keyLeft or self.data.keyRight -- 232
+		end), -- 232
+		Act("walk") -- 233
+	}), -- 231
+	Seq({ -- 236
+		Con("need stop", function(self) -- 236
+			return not self:isDoing("idle") -- 236
+		end), -- 236
+		Act("cancel"), -- 237
+		Act("idle") -- 238
+	}) -- 235
+}) -- 197

@@ -15,6 +15,8 @@ _ENV = Dora(
 )
 import "UI.Control.Basic.CircleButton"
 import "Utils" as :Set
+import global
+
 store: Store = Data
 
 themeColor = App.themeColor

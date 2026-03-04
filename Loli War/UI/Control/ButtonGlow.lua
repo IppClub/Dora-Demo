@@ -1,47 +1,48 @@
 -- [yue]: UI/Control/ButtonGlow.yue
-local Class = Dora.Class -- 1
-local _module_0 = Dora.Platformer -- 1
-local Visual = _module_0.Visual -- 1
-local Director = Dora.Director -- 1
-local Audio = Dora.Audio -- 1
-local loop = Dora.loop -- 1
-local sleep = Dora.sleep -- 1
 local _module_0 = nil -- 1
-local ButtonGlow = require("UI.View.ButtonGlow") -- 10
-_module_0 = Class(ButtonGlow, { -- 13
-	__init = function(self) -- 13
-		return self:slot("Tapped", function(touch) -- 14
-			local _with_0 = Visual("Particle/select.par") -- 15
-			if touch then -- 16
-				_with_0.position = self:convertToWorldSpace(touch.location) -- 17
-			else -- 19
-				_with_0.position = self.parent:convertToWorldSpace(self.position) -- 19
-			end -- 16
-			_with_0:addTo(Director.ui) -- 20
-			_with_0:autoRemove() -- 21
-			_with_0:start() -- 22
-			return _with_0 -- 15
-		end) -- 22
-	end, -- 13
-	glow = function(self) -- 24
-		if not self.scheduled then -- 25
-			Audio:play("Audio/select.wav") -- 26
-			return self:schedule(loop(function() -- 27
-				self.up.visible = false -- 28
-				self.down.visible = true -- 29
-				sleep(0.5) -- 30
-				self.up.visible = true -- 31
-				self.down.visible = false -- 32
-				return sleep(0.5) -- 33
-			end)) -- 33
-		end -- 25
-	end, -- 24
-	stopGlow = function(self) -- 35
-		if self.scheduled then -- 36
-			self:unschedule() -- 37
-			self.up.visible = true -- 38
-			self.down.visible = false -- 39
-		end -- 36
-	end -- 35
-}) -- 12
-return _module_0 -- 39
+local _ENV = Dora(Dora.Platformer) -- 9
+local require <const> = require -- 10
+local Class <const> = Class -- 10
+local Visual <const> = Visual -- 10
+local Director <const> = Director -- 10
+local Audio <const> = Audio -- 10
+local loop <const> = loop -- 10
+local sleep <const> = sleep -- 10
+local ButtonGlow = require("UI.View.ButtonGlow") -- 11
+_module_0 = Class(ButtonGlow, { -- 14
+	__init = function(self) -- 14
+		return self:slot("Tapped", function(touch) -- 15
+			local _with_0 = Visual("Particle/select.par") -- 16
+			if touch then -- 17
+				_with_0.position = self:convertToWorldSpace(touch.location) -- 18
+			else -- 20
+				_with_0.position = self.parent:convertToWorldSpace(self.position) -- 20
+			end -- 17
+			_with_0:addTo(Director.ui) -- 21
+			_with_0:autoRemove() -- 22
+			_with_0:start() -- 23
+			return _with_0 -- 16
+		end) -- 15
+	end, -- 14
+	glow = function(self) -- 25
+		if not self.scheduled then -- 26
+			Audio:play("Audio/select.wav") -- 27
+			return self:schedule(loop(function() -- 28
+				self.up.visible = false -- 29
+				self.down.visible = true -- 30
+				sleep(0.5) -- 31
+				self.up.visible = true -- 32
+				self.down.visible = false -- 33
+				return sleep(0.5) -- 34
+			end)) -- 28
+		end -- 26
+	end, -- 25
+	stopGlow = function(self) -- 36
+		if self.scheduled then -- 37
+			self:unschedule() -- 38
+			self.up.visible = true -- 39
+			self.down.visible = false -- 40
+		end -- 37
+	end -- 36
+}) -- 13
+return _module_0 -- 1

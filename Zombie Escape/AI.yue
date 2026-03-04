@@ -11,6 +11,7 @@ _ENV = Dora(
 	Dora.Platformer.Decision
 )
 import "Platformer" as Behavior:BT
+import global
 
 store: Store = Data
 

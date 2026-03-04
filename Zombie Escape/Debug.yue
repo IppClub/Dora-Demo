@@ -8,6 +8,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 _ENV = Dora Dora.ImGui, Dora.Platformer
 import "UI.View.Shape.Star"
+import global
 
 store:Store = Data
 {

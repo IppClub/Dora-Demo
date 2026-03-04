@@ -1,119 +1,119 @@
 -- [yue]: Scene.yue
-local _module_0 = Dora.Platformer -- 1
-local Data = _module_0.Data -- 1
-local PlatformWorld = _module_0.PlatformWorld -- 1
-local Vec2 = Dora.Vec2 -- 1
-local View = Dora.View -- 1
-local BodyDef = Dora.BodyDef -- 1
-local Color = Dora.Color -- 1
-local App = Dora.App -- 1
-local Body = Dora.Body -- 1
-local Entity = Dora.Entity -- 1
-local Size = Dora.Size -- 1
+local _ENV = Dora(Dora.Platformer) -- 9
 local Rectangle = require("UI.View.Shape.Rectangle") -- 10
-local Store = Data.store -- 12
-local PlayerLayer, PlayerGroup, ZombieLayer, TerrainLayer = Store.PlayerLayer, Store.PlayerGroup, Store.ZombieLayer, Store.TerrainLayer -- 13
-local DesignWidth <const> = 1280 -- 20
-local world -- 22
-do -- 22
-	local _with_0 = PlatformWorld() -- 22
-	_with_0:getLayer(PlayerLayer).renderGroup = true -- 23
-	_with_0:getLayer(ZombieLayer).renderGroup = true -- 24
-	_with_0:getLayer(TerrainLayer).renderGroup = true -- 25
-	_with_0.camera.followRatio = Vec2(0.01, 0.01) -- 26
-	_with_0.camera.zoom = View.size.width / DesignWidth -- 27
-	_with_0:onAppChange(function(settingName) -- 28
-		if settingName == "Size" then -- 28
-			_with_0.camera.zoom = View.size.width / DesignWidth -- 29
-		end -- 28
-	end) -- 28
-	world = _with_0 -- 22
-end -- 22
-Store.world = world -- 30
-local terrainDef -- 32
-do -- 32
-	local _with_0 = BodyDef() -- 32
-	_with_0.type = "Static" -- 33
-	_with_0:attachPolygon(Vec2(0, -500), 2500, 10, 0, 1, 1, 0) -- 34
-	_with_0:attachPolygon(Vec2(0, 500), 2500, 10, 0, 1, 1, 0) -- 35
-	_with_0:attachPolygon(Vec2(1250, 0), 10, 1000, 0, 1, 1, 0) -- 36
-	_with_0:attachPolygon(Vec2(-1250, 0), 10, 1000, 0, 1, 1, 0) -- 37
-	terrainDef = _with_0 -- 32
-end -- 32
-local fillColor = Color(App.themeColor:toColor3(), 0x66):toARGB() -- 39
-local borderColor = App.themeColor:toARGB() -- 40
-do -- 42
-	local _with_0 = Body(terrainDef, world, Vec2.zero) -- 42
-	_with_0.order = TerrainLayer -- 43
-	_with_0.group = Data.groupTerrain -- 44
-	_with_0:addChild(Rectangle({ -- 46
-		y = -500, -- 46
-		width = 2500, -- 47
-		height = 10, -- 48
-		fillColor = fillColor, -- 49
-		borderColor = borderColor, -- 50
-		fillOrder = 1, -- 51
-		lineOrder = 2 -- 52
-	})) -- 45
-	_with_0:addChild(Rectangle({ -- 55
-		x = 1250, -- 55
-		y = 0, -- 56
-		width = 10, -- 57
-		height = 1000, -- 58
-		fillColor = fillColor, -- 59
-		borderColor = borderColor, -- 60
-		fillOrder = 1, -- 61
-		lineOrder = 2 -- 62
-	})) -- 54
-	_with_0:addChild(Rectangle({ -- 65
-		x = -1250, -- 65
-		y = 0, -- 66
-		width = 10, -- 67
-		height = 1000, -- 68
-		fillColor = fillColor, -- 69
-		borderColor = borderColor, -- 70
-		fillOrder = 1, -- 71
-		lineOrder = 2 -- 72
-	})) -- 64
-	_with_0:addTo(world) -- 74
-end -- 42
-Entity({ -- 77
-	obstacleDef = "Body_ObstacleS", -- 77
-	size = Size(100, 60), -- 78
-	position = Vec2(100, -464), -- 79
-	color = borderColor -- 80
-}) -- 76
-Entity({ -- 83
-	obstacleDef = "Body_ObstacleM", -- 83
-	size = Size(260, 60), -- 84
-	position = Vec2(-400, -464), -- 85
-	color = borderColor -- 86
-}) -- 82
-Entity({ -- 89
-	obstacleDef = "Body_ObstacleS", -- 89
-	size = Size(100, 60), -- 90
-	position = Vec2(-400, -404), -- 91
-	color = borderColor -- 92
-}) -- 88
-Entity({ -- 95
-	obstacleDef = "Body_ObstacleC", -- 95
-	size = 40, -- 96
-	position = Vec2(400, -464), -- 97
-	color = 0xff6666 -- 98
-}) -- 94
-Entity({ -- 101
-	unitDef = "Unit_KidM", -- 101
-	order = PlayerLayer, -- 102
-	position = Vec2(-50, -430), -- 103
-	group = PlayerGroup, -- 104
-	faceRight = false, -- 105
-	player = true -- 106
-}) -- 100
-return Entity({ -- 109
-	unitDef = "Unit_KidW", -- 109
-	order = PlayerLayer, -- 110
-	position = Vec2(0, -430), -- 111
-	group = PlayerGroup, -- 112
-	faceRight = true, -- 113
-	player = true -- 114
-}) -- 114
+local Data <const> = Data -- 11
+local PlatformWorld <const> = PlatformWorld -- 11
+local Vec2 <const> = Vec2 -- 11
+local View <const> = View -- 11
+local BodyDef <const> = BodyDef -- 11
+local Color <const> = Color -- 11
+local App <const> = App -- 11
+local Body <const> = Body -- 11
+local Entity <const> = Entity -- 11
+local Size <const> = Size -- 11
+local Store = Data.store -- 13
+local PlayerLayer, PlayerGroup, ZombieLayer, TerrainLayer = Store.PlayerLayer, Store.PlayerGroup, Store.ZombieLayer, Store.TerrainLayer -- 14
+local DesignWidth <const> = 1280 -- 21
+local world -- 23
+do -- 23
+	local _with_0 = PlatformWorld() -- 23
+	_with_0:getLayer(PlayerLayer).renderGroup = true -- 24
+	_with_0:getLayer(ZombieLayer).renderGroup = true -- 25
+	_with_0:getLayer(TerrainLayer).renderGroup = true -- 26
+	_with_0.camera.followRatio = Vec2(0.01, 0.01) -- 27
+	_with_0.camera.zoom = View.size.width / DesignWidth -- 28
+	_with_0:onAppChange(function(settingName) -- 29
+		if settingName == "Size" then -- 29
+			_with_0.camera.zoom = View.size.width / DesignWidth -- 30
+		end -- 29
+	end) -- 29
+	world = _with_0 -- 23
+end -- 23
+Store.world = world -- 31
+local terrainDef -- 33
+do -- 33
+	local _with_0 = BodyDef() -- 33
+	_with_0.type = "Static" -- 34
+	_with_0:attachPolygon(Vec2(0, -500), 2500, 10, 0, 1, 1, 0) -- 35
+	_with_0:attachPolygon(Vec2(0, 500), 2500, 10, 0, 1, 1, 0) -- 36
+	_with_0:attachPolygon(Vec2(1250, 0), 10, 1000, 0, 1, 1, 0) -- 37
+	_with_0:attachPolygon(Vec2(-1250, 0), 10, 1000, 0, 1, 1, 0) -- 38
+	terrainDef = _with_0 -- 33
+end -- 33
+local fillColor = Color(App.themeColor:toColor3(), 0x66):toARGB() -- 40
+local borderColor = App.themeColor:toARGB() -- 41
+do -- 43
+	local _with_0 = Body(terrainDef, world, Vec2.zero) -- 43
+	_with_0.order = TerrainLayer -- 44
+	_with_0.group = Data.groupTerrain -- 45
+	_with_0:addChild(Rectangle({ -- 47
+		y = -500, -- 47
+		width = 2500, -- 48
+		height = 10, -- 49
+		fillColor = fillColor, -- 50
+		borderColor = borderColor, -- 51
+		fillOrder = 1, -- 52
+		lineOrder = 2 -- 53
+	})) -- 46
+	_with_0:addChild(Rectangle({ -- 56
+		x = 1250, -- 56
+		y = 0, -- 57
+		width = 10, -- 58
+		height = 1000, -- 59
+		fillColor = fillColor, -- 60
+		borderColor = borderColor, -- 61
+		fillOrder = 1, -- 62
+		lineOrder = 2 -- 63
+	})) -- 55
+	_with_0:addChild(Rectangle({ -- 66
+		x = -1250, -- 66
+		y = 0, -- 67
+		width = 10, -- 68
+		height = 1000, -- 69
+		fillColor = fillColor, -- 70
+		borderColor = borderColor, -- 71
+		fillOrder = 1, -- 72
+		lineOrder = 2 -- 73
+	})) -- 65
+	_with_0:addTo(world) -- 75
+end -- 43
+Entity({ -- 78
+	obstacleDef = "Body_ObstacleS", -- 78
+	size = Size(100, 60), -- 79
+	position = Vec2(100, -464), -- 80
+	color = borderColor -- 81
+}) -- 77
+Entity({ -- 84
+	obstacleDef = "Body_ObstacleM", -- 84
+	size = Size(260, 60), -- 85
+	position = Vec2(-400, -464), -- 86
+	color = borderColor -- 87
+}) -- 83
+Entity({ -- 90
+	obstacleDef = "Body_ObstacleS", -- 90
+	size = Size(100, 60), -- 91
+	position = Vec2(-400, -404), -- 92
+	color = borderColor -- 93
+}) -- 89
+Entity({ -- 96
+	obstacleDef = "Body_ObstacleC", -- 96
+	size = 40, -- 97
+	position = Vec2(400, -464), -- 98
+	color = 0xff6666 -- 99
+}) -- 95
+Entity({ -- 102
+	unitDef = "Unit_KidM", -- 102
+	order = PlayerLayer, -- 103
+	position = Vec2(-50, -430), -- 104
+	group = PlayerGroup, -- 105
+	faceRight = false, -- 106
+	player = true -- 107
+}) -- 101
+return Entity({ -- 110
+	unitDef = "Unit_KidW", -- 110
+	order = PlayerLayer, -- 111
+	position = Vec2(0, -430), -- 112
+	group = PlayerGroup, -- 113
+	faceRight = true, -- 114
+	player = true -- 115
+}) -- 109

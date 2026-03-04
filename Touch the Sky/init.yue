@@ -9,6 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 -- GGJ2023 by Bao Yicheng from https://github.com/thisisbadBao/TouchTheSky
 
 _ENV = Dora Dora.ImGui
+import global
 
 scriptPath = Path\getScriptPath ...
 Content\insertSearchPath 1, scriptPath
@@ -261,8 +262,10 @@ buildBlocks = (index) ->
 				\slot "BodyEnter", (body) ->
 					if not isInvincible
 						loseHeart!
-						body\applyLinearImpulse Vec2(math.random(-1000, 1000), math.random(-1000, -500)),
-						 body.position
+						body\applyLinearImpulse(
+							Vec2 math.random(-1000, 1000), math.random -1000, -500
+							body.position
+						)
 						Audio\play "sfx/explode2.wav"
 					\schedule once ->
 						isInvincible = true

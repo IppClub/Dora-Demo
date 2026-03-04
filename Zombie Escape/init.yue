@@ -9,6 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 -- Ludum Dare 42
 
 _ENV = Dora
+import global
 
 if scriptPath := Path\getScriptPath ...
 	Content\insertSearchPath 1, scriptPath

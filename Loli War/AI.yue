@@ -10,6 +10,7 @@ _ENV = Dora(
 	Dora.Platformer
 	Dora.Platformer.Decision
 )
+import global
 
 store: Store = Data
 {

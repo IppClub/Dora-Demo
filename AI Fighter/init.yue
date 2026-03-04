@@ -14,6 +14,7 @@ _ENV = Dora(
 	Dora.Platformer.Decision
 )
 import "UI.Control.Basic.CircleButton"
+import global
 store: Store = Data
 
 --LoadFontTTF "Font/sarasa-mono-sc-regular.ttf", 20, "Chinese"

@@ -10,6 +10,7 @@ _ENV = Dora Dora.Platformer
 import "UI.View.Shape.Rectangle"
 import "UI.View.Shape.Circle"
 import "UI.View.Shape.Star"
+import global
 
 store:Store = Data
 
