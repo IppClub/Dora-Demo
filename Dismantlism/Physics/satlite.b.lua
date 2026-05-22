@@ -1,0 +1,1 @@
+return {"Array",{"Phyx.Rect","rect","Dynamic",{0,0},0,{0,0},{118,180},1,0.4,0.4,0,0,false,{0,-10},false,false,0,{"Array",{"Phyx.SubRect",{0,21},0,{360,119},1,0.4,0.4,false,0}},"Model/duality.clip|s3",{0,0}}}

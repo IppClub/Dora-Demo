@@ -341,7 +341,7 @@ buildScene = function() -- 229
 				angle = 0 -- 235
 			end -- 235
 		end -- 231
-		local node = BodyEx(require(Path("Physics", file)), world, position, angle) -- 237
+		local node = BodyEx(Path("Physics", file), world, position, angle) -- 237
 		world:addChild(node) -- 238
 		if spaceItems[file] then -- 239
 			node.data:each(function(self) -- 240

@@ -234,7 +234,7 @@ buildScene = ->
 			:position = Vec2.zero
 			:angle = 0
 		} = scene\get i
-		node = BodyEx require(Path "Physics", file), world, position, angle
+		node = BodyEx Path("Physics", file), world, position, angle
 		world\addChild node
 		if spaceItems[file]
 			node.data\each =>
