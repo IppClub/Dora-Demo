@@ -370,7 +370,6 @@ windowFlags =
 	* "NoDecoration"
 	* "NoSavedSettings"
 	* "NoFocusOnAppearing"
-	* "NoNav"
 	* "NoMove"
 threadLoop ->
 	const :width, :height = App.visualSize

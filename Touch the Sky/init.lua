@@ -1,4 +1,4 @@
--- [yue]: init.yue
+-- [yue]: Dora-Demo/Touch the Sky/init.yue
 local _ENV = Dora(Dora.ImGui) -- 11
 local Path <const> = Path -- 12
 local Content <const> = Content -- 12
@@ -770,25 +770,24 @@ local windowFlags = { -- 370
 	"NoDecoration", -- 370
 	"NoSavedSettings", -- 371
 	"NoFocusOnAppearing", -- 372
-	"NoNav", -- 373
-	"NoMove" -- 374
+	"NoMove" -- 373
 } -- 369
-return threadLoop(function() -- 375
-	local width, height -- 376
-	do -- 376
-		local _obj_0 = App.visualSize -- 376
-		width, height = _obj_0.width, _obj_0.height -- 376
-	end -- 376
-	SetNextWindowBgAlpha(0.35) -- 377
-	SetNextWindowPos(Vec2(width - 140, height - 170), "Always", Vec2.zero) -- 378
-	SetNextWindowSize(Vec2(140, 0), "Always") -- 379
-	return Begin("Touch The Sky", windowFlags, function() -- 380
-		Text("Touch The Sky") -- 381
-		Separator() -- 382
-		TextWrapped("Click to grab!") -- 383
-		local changed, isHardMode = Checkbox("Hard Mode", hardMode) -- 384
-		if changed then -- 384
-			hardMode = isHardMode -- 385
-		end -- 384
-	end) -- 380
-end) -- 375
+return threadLoop(function() -- 374
+	local width, height -- 375
+	do -- 375
+		local _obj_0 = App.visualSize -- 375
+		width, height = _obj_0.width, _obj_0.height -- 375
+	end -- 375
+	SetNextWindowBgAlpha(0.35) -- 376
+	SetNextWindowPos(Vec2(width - 140, height - 170), "Always", Vec2.zero) -- 377
+	SetNextWindowSize(Vec2(140, 0), "Always") -- 378
+	return Begin("Touch The Sky", windowFlags, function() -- 379
+		Text("Touch The Sky") -- 380
+		Separator() -- 381
+		TextWrapped("Click to grab!") -- 382
+		local changed, isHardMode = Checkbox("Hard Mode", hardMode) -- 383
+		if changed then -- 383
+			hardMode = isHardMode -- 384
+		end -- 383
+	end) -- 379
+end) -- 374
