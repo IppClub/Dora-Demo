@@ -1,4 +1,4 @@
--- [xml]: UI/View/StartPanel.xml
+-- [xml]: Dora-Demo/Loli War/UI/View/StartPanel.xml
 local ButtonGlow = require("UI.Control.ButtonGlow") -- 2
 return function(args) -- 1
 local _ENV = Dora(args) -- 1

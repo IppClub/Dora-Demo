@@ -1,4 +1,4 @@
--- [yue]: init.yue
+-- [yue]: Dora-Demo/Zombie Escape/init.yue
 local _ENV = Dora -- 11
 local Path <const> = Path -- 12
 local Content <const> = Content -- 12

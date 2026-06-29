@@ -1,4 +1,4 @@
--- [yue]: Bullet.yue
+-- [yue]: Dora-Demo/Loli War/Bullet.yue
 local _ENV = Dora(Dora.Platformer) -- 9
 local Data <const> = Data -- 10
 local BulletDef <const> = BulletDef -- 10

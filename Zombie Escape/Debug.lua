@@ -1,4 +1,4 @@
--- [yue]: Debug.yue
+-- [yue]: Dora-Demo/Zombie Escape/Debug.yue
 local _ENV = Dora(Dora.ImGui, Dora.Platformer) -- 9
 local Star = require("UI.View.Shape.Star") -- 10
 local Data <const> = Data -- 11

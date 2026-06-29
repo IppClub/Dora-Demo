@@ -1,4 +1,4 @@
--- [yue]: Constant.yue
+-- [yue]: Dora-Demo/Zombie Escape/Constant.yue
 local _ENV = Dora(Dora.Platformer) -- 9
 local Data <const> = Data -- 10
 local _with_0 = Data.store -- 12

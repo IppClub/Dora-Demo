@@ -1,4 +1,4 @@
--- [yue]: UI/Control/ButtonGlow.yue
+-- [yue]: Dora-Demo/Loli War/UI/Control/ButtonGlow.yue
 local _module_0 = nil -- 1
 local _ENV = Dora(Dora.Platformer) -- 9
 local require <const> = require -- 10

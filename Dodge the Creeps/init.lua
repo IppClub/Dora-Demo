@@ -6,7 +6,7 @@ local StartUp, Game -- 1
 local ____DoraX = require("DoraX") -- 2
 local React = ____DoraX.React -- 2
 local toNode = ____DoraX.toNode -- 2
-local useRef = ____DoraX.useRef -- 2
+local reference = ____DoraX.reference -- 2
 local ____Dora = require("Dora") -- 3
 local Audio = ____Dora.Audio -- 3
 local Director = ____Dora.Director -- 3
@@ -277,7 +277,7 @@ Game = function() -- 175
 	inputManager:popContext() -- 176
 	inputManager:pushContext("Game") -- 177
 	local score = 0 -- 178
-	local label = useRef() -- 179
+	local label = reference() -- 179
 	Audio:playStream("Audio/House In a Forest Loop.ogg", true) -- 180
 	return React.createElement( -- 181
 		"clip-node", -- 181

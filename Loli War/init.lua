@@ -1,4 +1,4 @@
--- [yue]: init.yue
+-- [yue]: Dora-Demo/Loli War/init.yue
 local _ENV = Dora -- 9
 local Path <const> = Path -- 10
 local Content <const> = Content -- 10

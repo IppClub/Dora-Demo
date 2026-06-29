@@ -1,4 +1,4 @@
--- [yue]: Logic.yue
+-- [yue]: Dora-Demo/Loli War/Logic.yue
 local _ENV = Dora(Dora.Platformer) -- 9
 local Data <const> = Data -- 10
 local Group <const> = Group -- 10

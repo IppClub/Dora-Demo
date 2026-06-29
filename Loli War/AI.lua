@@ -1,4 +1,4 @@
--- [yue]: AI.yue
+-- [yue]: Dora-Demo/Loli War/AI.yue
 local _ENV = Dora(Dora.Platformer, Dora.Platformer.Decision) -- 9
 local Data <const> = Data -- 13
 local Group <const> = Group -- 13

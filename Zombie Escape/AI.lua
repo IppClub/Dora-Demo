@@ -1,4 +1,4 @@
--- [yue]: AI.yue
+-- [yue]: Dora-Demo/Zombie Escape/AI.yue
 local _ENV = Dora(Dora.Platformer, Dora.Platformer.Decision) -- 9
 local BT = require("Platformer").Behavior -- 13
 local Data <const> = Data -- 14

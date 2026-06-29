@@ -1,4 +1,4 @@
--- [yue]: Control.yue
+-- [yue]: Dora-Demo/Loli War/Control.yue
 local _ENV = Dora(Dora.Platformer) -- 9
 local require <const> = require -- 10
 local tostring <const> = tostring -- 10

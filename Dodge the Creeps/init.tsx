@@ -1,5 +1,5 @@
 // @preview-file on clear
-import { React, toNode, useRef } from 'DoraX';
+import { React, toNode, reference } from 'DoraX';
 import { Audio, BodyMoveType, ButtonName, Director, KeyName, Label, Node, PhysicsWorld, Sprite, TypeName, Vec2, View, emit, sleep, thread, tolua } from 'Dora';
 import { CreateManager, Trigger, GamePad } from 'InputManager';
 
@@ -176,7 +176,7 @@ const Game = () => {
 	inputManager.popContext();
 	inputManager.pushContext('Game');
 	let score = 0;
-	const label = useRef<Label.Type>();
+	const label = reference<Label.Type>();
 	Audio.playStream('Audio/House In a Forest Loop.ogg', true);
 	return (
 		<clip-node stencil={<Background/>}>
