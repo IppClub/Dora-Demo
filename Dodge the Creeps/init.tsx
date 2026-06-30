@@ -1,6 +1,6 @@
 // @preview-file on clear
 import { React, toNode, reference } from 'DoraX';
-import { Audio, BodyMoveType, ButtonName, Director, KeyName, Label, Node, PhysicsWorld, Sprite, TypeName, Vec2, View, emit, sleep, thread, tolua } from 'Dora';
+import { Audio, BodyMoveType, ButtonName, Director, KeyName, Label, Node, PhysicsWorld, Sprite, TypeName, Vec2, View, emit, sleep, thread, tolua, App } from 'Dora';
 import { CreateManager, Trigger, GamePad } from 'InputManager';
 
 const Pressed = (keyName: KeyName, buttonName: ButtonName) => {
@@ -10,20 +10,39 @@ const Pressed = (keyName: KeyName, buttonName: ButtonName) => {
 	]);
 };
 
+const enum Context {
+	Game = 'Game',
+	UI = 'UI'
+}
+
+const enum Input {
+	Up = 'Up',
+	Down = 'Down',
+	Left = 'Left',
+	Right = 'Right',
+	Start = 'Start'
+}
+
 const inputManager = CreateManager({
-	Game: {
-		Up: Pressed(KeyName.W, ButtonName.Up),
-		Down: Pressed(KeyName.S, ButtonName.Down),
-		Left: Pressed(KeyName.A, ButtonName.Left),
-		Right: Pressed(KeyName.D, ButtonName.Right),
+	[Context.Game]: {
+		[Input.Up]: Pressed(KeyName.W, ButtonName.Up),
+		[Input.Down]: Pressed(KeyName.S, ButtonName.Down),
+		[Input.Left]: Pressed(KeyName.A, ButtonName.Left),
+		[Input.Right]: Pressed(KeyName.D, ButtonName.Right),
 	},
-	UI: {
-		Start: Trigger.Selector([
+	[Context.UI]: {
+		[Input.Start]: Trigger.Selector([
 			Trigger.KeyDown(KeyName.Return),
 			Trigger.ButtonDown(ButtonName.Start)
 		]),
 	}
 });
+
+const InputUp = inputManager.getEventName(Input.Up);
+const InputDown = inputManager.getEventName(Input.Down);
+const InputLeft = inputManager.getEventName(Input.Left);
+const InputRight = inputManager.getEventName(Input.Right);
+const InputStart = inputManager.getEventName(Input.Start);
 
 inputManager.getNode().addTo(Director.ui);
 
@@ -131,16 +150,16 @@ const Player = (world: PhysicsWorld.Type) => {
 	if (!node) error('failed to create player!');
 	node.addTo(world);
 	let x = 0; let y = 0;
-	node.gslot('Input.Up', () => y = 1);
-	node.gslot('Input.Down', () => y = -1);
-	node.gslot('Input.Left', () => x = -1);
-	node.gslot('Input.Right', () => x = 1);
+	node.gslot(InputUp, () => y = 1);
+	node.gslot(InputDown, () => y = -1);
+	node.gslot(InputLeft, () => x = -1);
+	node.gslot(InputRight, () => x = 1);
 	node.loop(() => {
 		const direction = Vec2(x, y).normalize();
 		if (direction.length > 0) {
 			node.angle = -math.deg(math.atan(direction.y, direction.x)) + 90;
 		}
-		const newPos = node.position.add(Vec2(x, y).normalize().mul(10));
+		const newPos = node.position.add(Vec2(x, y).normalize().mul(10 * 60 * App.deltaTime));
 		node.position = newPos.clamp(Vec2(-hw + 40, -hh + 40), Vec2(hw - 40, hh - 40));
 		x = 0; y = 0;
 		return false;
@@ -153,7 +172,7 @@ const Background = () => <draw-node><rect-shape width={width} height={height} fi
 
 const StartUp = () => {
 	inputManager.popContext();
-	inputManager.pushContext('UI');
+	inputManager.pushContext(Context.UI);
 	return (
 		<>
 			<Background/>
@@ -161,8 +180,8 @@ const StartUp = () => {
 			<draw-node y={-150}>
 				<rect-shape width={250} height={80} fillColor={0xff3a3a3a}/>
 				<label fontName='Xolonium-Regular' fontSize={60} text={'Start'}/>
-				<node width={250} height={80} onTapped={() => emit('Input.Start')} onMount={node => {
-					node.gslot('Input.Start', () => {
+				<node width={250} height={80} onTapped={() => emit(InputStart)} onMount={node => {
+					node.gslot(InputStart, () => {
 						Director.entry.removeAllChildren();
 						toNode(<Game/>);
 					});
@@ -174,7 +193,7 @@ const StartUp = () => {
 
 const Game = () => {
 	inputManager.popContext();
-	inputManager.pushContext('Game');
+	inputManager.pushContext(Context.Game);
 	let score = 0;
 	const label = reference<Label.Type>();
 	Audio.playStream('Audio/House In a Forest Loop.ogg', true);

@@ -18,6 +18,7 @@ local emit = ____Dora.emit -- 3
 local sleep = ____Dora.sleep -- 3
 local thread = ____Dora.thread -- 3
 local tolua = ____Dora.tolua -- 3
+local App = ____Dora.App -- 3
 local ____InputManager = require("InputManager") -- 4
 local CreateManager = ____InputManager.CreateManager -- 4
 local Trigger = ____InputManager.Trigger -- 4
@@ -28,307 +29,312 @@ local function Pressed(keyName, buttonName) -- 6
 		Trigger.ButtonPressed(buttonName) -- 9
 	}) -- 9
 end -- 6
-local inputManager = CreateManager({ -- 13
-	Game = { -- 14
-		Up = Pressed("W", "dpup"), -- 15
-		Down = Pressed("S", "dpdown"), -- 16
-		Left = Pressed("A", "dpleft"), -- 17
-		Right = Pressed("D", "dpright") -- 18
-	}, -- 18
-	UI = {Start = Trigger.Selector({ -- 20
-		Trigger.KeyDown("Return"), -- 22
-		Trigger.ButtonDown("start") -- 23
-	})} -- 23
-}) -- 23
-inputManager:getNode():addTo(Director.ui) -- 28
-local ____opt_0 = toNode(React.createElement(GamePad, { -- 28
-	inputManager = inputManager, -- 28
-	noLeftStick = true, -- 28
-	noRightStick = true, -- 28
-	noButtonPad = true, -- 28
-	noTriggerPad = true, -- 28
-	noControlPad = true -- 28
-})) -- 28
-if ____opt_0 ~= nil then -- 28
-	____opt_0:addTo(Director.ui) -- 30
-end -- 30
-local function playAnimation(node, name) -- 42
-	node:removeAllChildren() -- 43
-	local interval = 0.2 -- 44
-	local frames = { -- 45
-		Sprite(("Image/art.clip|" .. name) .. "1") or Sprite(), -- 46
-		Sprite(("Image/art.clip|" .. name) .. "2") or Sprite() -- 47
-	} -- 47
-	for ____, frame in ipairs(frames) do -- 49
-		if __TS__StringStartsWith(name, "enemy") then -- 49
-			frame.angle = -90 -- 51
-		end -- 51
-		frame:addTo(node) -- 53
-	end -- 53
-	local i = 0 -- 55
-	node:loop(function() -- 56
-		frames[i + 1].visible = true -- 57
-		i = (i + 1) % 2 -- 58
-		frames[i + 1].visible = false -- 59
-		sleep(interval) -- 60
-		return false -- 61
-	end) -- 56
-end -- 42
-local width = 480 -- 65
-local height = 700 -- 66
-local hw = width / 2 -- 67
-local hh = height / 2 -- 68
-local DesignSceneHeight = height -- 70
-local function updateViewSize() -- 71
-	local camera = tolua.cast(Director.currentCamera, "Camera2D") -- 72
-	if camera then -- 72
-		camera.zoom = View.size.height / DesignSceneHeight -- 74
-	end -- 74
-end -- 71
-updateViewSize() -- 77
-Director.entry:onAppChange(function(settingName) -- 78
-	if settingName == "Size" then -- 78
-		updateViewSize() -- 80
-	end -- 80
-end) -- 78
-local function Enemy(world, score) -- 84
-	local dir = math.random(0, 3) -- 85
-	local angle = math.random(dir * 90 + 25, dir * 90 + 180 - 25) -- 86
-	local pos = Vec2.zero -- 87
-	local minW = -hw - 40 -- 88
-	local maxW = hw + 40 -- 88
-	local minH = -hh - 40 -- 89
-	local maxH = hh + 40 -- 89
-	local randW = math.random(minW, maxW) -- 90
-	local randH = math.random(minH, maxH) -- 91
-	repeat -- 91
-		local ____switch13 = dir -- 91
-		local ____cond13 = ____switch13 == 0 -- 91
-		if ____cond13 then -- 91
-			pos = Vec2(minW, randH) -- 93
-			break -- 93
-		end -- 93
-		____cond13 = ____cond13 or ____switch13 == 1 -- 93
-		if ____cond13 then -- 93
-			pos = Vec2(randW, maxH) -- 94
-			break -- 94
-		end -- 94
-		____cond13 = ____cond13 or ____switch13 == 2 -- 94
-		if ____cond13 then -- 94
-			pos = Vec2(maxW, randH) -- 95
-			break -- 95
-		end -- 95
-		____cond13 = ____cond13 or ____switch13 == 3 -- 95
-		if ____cond13 then -- 95
-			pos = Vec2(randW, minH) -- 96
-			break -- 96
-		end -- 96
-	until true -- 96
-	local radian = math.rad(angle) -- 98
-	local velocity = Vec2( -- 99
-		math.sin(radian), -- 99
-		math.cos(radian) -- 99
-	):normalize():mul(200 + score * 2) -- 99
-	local ____opt_2 = toNode(React.createElement( -- 99
-		"body", -- 99
-		{ -- 99
-			world = world, -- 99
-			group = 0, -- 99
-			type = "Dynamic", -- 99
-			linearAcceleration = Vec2.zero, -- 99
-			x = pos.x, -- 99
-			y = pos.y, -- 99
-			velocityX = velocity.x, -- 99
-			velocityY = velocity.y, -- 99
-			angle = angle, -- 99
-			onMount = function(node) -- 99
-				local enemys = {"enemyFlyingAlt_", "enemySwimming_", "enemyWalking_"} -- 104
-				playAnimation( -- 105
-					node, -- 105
-					enemys[math.random(0, 2) + 1] -- 105
-				) -- 105
-			end -- 103
-		}, -- 103
-		React.createElement("disk-fixture", {radius = 40}) -- 103
-	)) -- 103
-	if ____opt_2 ~= nil then -- 103
-		____opt_2:addTo(world) -- 100
-	end -- 100
-end -- 84
-local function Player(world) -- 112
-	local node -- 113
-	node = toNode(React.createElement( -- 113
-		"body", -- 113
-		{ -- 113
-			world = world, -- 113
-			group = 1, -- 113
-			type = "Dynamic", -- 113
-			linearAcceleration = Vec2.zero, -- 113
-			onContactStart = function(other) -- 113
-				if other.group == 0 then -- 113
-					toNode(React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Game Over", textWidth = 300})) -- 117
-					if node ~= nil then -- 117
-						node:removeFromParent() -- 118
-					end -- 118
-					thread(function() -- 119
-						sleep(2) -- 120
-						Director.entry:removeAllChildren() -- 121
-						toNode(React.createElement(StartUp, nil)) -- 122
-					end) -- 119
-					Audio:stopStream(0.5) -- 124
-					Audio:play("Audio/gameover.wav") -- 125
-				end -- 125
-			end -- 115
-		}, -- 115
-		React.createElement("disk-fixture", {radius = 40}) -- 115
-	)) -- 115
-	if not node then -- 115
-		error("failed to create player!") -- 131
-	end -- 131
-	node:addTo(world) -- 132
-	local x = 0 -- 133
-	local y = 0 -- 133
-	node:gslot( -- 134
-		"Input.Up", -- 134
-		function() -- 134
-			y = 1 -- 134
-			return y -- 134
-		end -- 134
-	) -- 134
-	node:gslot( -- 135
-		"Input.Down", -- 135
-		function() -- 135
-			y = -1 -- 135
-			return y -- 135
-		end -- 135
-	) -- 135
-	node:gslot( -- 136
-		"Input.Left", -- 136
-		function() -- 136
-			x = -1 -- 136
-			return x -- 136
-		end -- 136
-	) -- 136
-	node:gslot( -- 137
-		"Input.Right", -- 137
-		function() -- 137
-			x = 1 -- 137
-			return x -- 137
-		end -- 137
-	) -- 137
-	node:loop(function() -- 138
-		local direction = Vec2(x, y):normalize() -- 139
-		if direction.length > 0 then -- 139
-			node.angle = -math.deg(math.atan(direction.y, direction.x)) + 90 -- 141
-		end -- 141
-		local newPos = node.position:add(Vec2(x, y):normalize():mul(10)) -- 143
-		node.position = newPos:clamp( -- 144
-			Vec2(-hw + 40, -hh + 40), -- 144
-			Vec2(hw - 40, hh - 40) -- 144
-		) -- 144
-		x = 0 -- 145
-		y = 0 -- 145
-		return false -- 146
-	end) -- 138
-	local animNode = Node():addTo(node) -- 148
-	playAnimation(animNode, "playerGrey_walk") -- 149
-end -- 112
-local function Background() -- 152
-	return React.createElement( -- 152
-		"draw-node", -- 152
-		nil, -- 152
-		React.createElement("rect-shape", {width = width, height = height, fillColor = 4283132780}) -- 152
-	) -- 152
-end -- 152
-StartUp = function() -- 154
-	inputManager:popContext() -- 155
-	inputManager:pushContext("UI") -- 156
-	return React.createElement( -- 157
-		React.Fragment, -- 157
-		nil, -- 157
-		React.createElement(Background, nil), -- 157
-		React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Dodge the Creeps!", textWidth = 400}), -- 157
-		React.createElement( -- 157
-			"draw-node", -- 157
-			{y = -150}, -- 157
-			React.createElement("rect-shape", {width = 250, height = 80, fillColor = 4282006074}), -- 157
-			React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 60, text = "Start"}), -- 157
-			React.createElement( -- 157
-				"node", -- 157
-				{ -- 157
-					width = 250, -- 157
-					height = 80, -- 157
-					onTapped = function() return emit("Input.Start") end, -- 157
-					onMount = function(node) -- 157
-						node:gslot( -- 165
-							"Input.Start", -- 165
-							function() -- 165
-								Director.entry:removeAllChildren() -- 166
-								toNode(React.createElement(Game, nil)) -- 167
-							end -- 165
-						) -- 165
-					end -- 164
-				} -- 164
-			) -- 164
-		) -- 164
-	) -- 164
-end -- 154
-Game = function() -- 175
-	inputManager:popContext() -- 176
-	inputManager:pushContext("Game") -- 177
-	local score = 0 -- 178
-	local label = reference() -- 179
-	Audio:playStream("Audio/House In a Forest Loop.ogg", true) -- 180
-	return React.createElement( -- 181
-		"clip-node", -- 181
-		{stencil = React.createElement(Background, nil)}, -- 181
-		React.createElement(Background, nil), -- 181
-		React.createElement( -- 181
-			"physics-world", -- 181
-			{onMount = function(world) -- 181
-				Player(world) -- 185
-				world:once(function() -- 186
-					local msg = toNode(React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Get Ready!", y = 200})) -- 187
-					sleep(1) -- 190
-					if msg ~= nil then -- 190
-						msg:removeFromParent() -- 191
-					end -- 191
-					if label.current then -- 191
-						label.current.visible = true -- 193
-					end -- 193
-					world:loop(function() -- 195
-						sleep(0.5) -- 196
-						Enemy(world, score) -- 197
-						return false -- 198
-					end) -- 195
-				end) -- 186
-			end}, -- 184
-			React.createElement("contact", {groupA = 0, groupB = 0, enabled = false}), -- 184
-			React.createElement("contact", {groupA = 0, groupB = 1, enabled = true}), -- 184
-			React.createElement( -- 184
-				"body", -- 184
-				{ -- 184
-					type = "Static", -- 184
-					group = 1, -- 184
-					onBodyLeave = function() -- 184
-						score = score + 1 -- 205
-						if label.current then -- 205
-							label.current.text = tostring(score) -- 207
-						end -- 207
-					end -- 204
-				}, -- 204
-				React.createElement("rect-fixture", {sensorTag = 0, width = width, height = height}) -- 204
-			) -- 204
-		), -- 204
-		React.createElement("label", { -- 204
-			ref = label, -- 204
-			fontName = "Xolonium-Regular", -- 204
-			fontSize = 60, -- 204
-			text = "0", -- 204
-			y = 300, -- 204
-			visible = false -- 204
-		}) -- 204
-	) -- 204
-end -- 175
-toNode(React.createElement(StartUp, nil)) -- 218
-return ____exports -- 218
+local inputManager = CreateManager({ -- 26
+	Game = { -- 27
+		Up = Pressed("W", "dpup"), -- 28
+		Down = Pressed("S", "dpdown"), -- 29
+		Left = Pressed("A", "dpleft"), -- 30
+		Right = Pressed("D", "dpright") -- 31
+	}, -- 31
+	UI = {Start = Trigger.Selector({ -- 33
+		Trigger.KeyDown("Return"), -- 35
+		Trigger.ButtonDown("start") -- 36
+	})} -- 36
+}) -- 36
+local InputUp = inputManager:getEventName("Up") -- 41
+local InputDown = inputManager:getEventName("Down") -- 42
+local InputLeft = inputManager:getEventName("Left") -- 43
+local InputRight = inputManager:getEventName("Right") -- 44
+local InputStart = inputManager:getEventName("Start") -- 45
+inputManager:getNode():addTo(Director.ui) -- 47
+local ____opt_0 = toNode(React.createElement(GamePad, { -- 47
+	inputManager = inputManager, -- 47
+	noLeftStick = true, -- 47
+	noRightStick = true, -- 47
+	noButtonPad = true, -- 47
+	noTriggerPad = true, -- 47
+	noControlPad = true -- 47
+})) -- 47
+if ____opt_0 ~= nil then -- 47
+	____opt_0:addTo(Director.ui) -- 49
+end -- 49
+local function playAnimation(node, name) -- 61
+	node:removeAllChildren() -- 62
+	local interval = 0.2 -- 63
+	local frames = { -- 64
+		Sprite(("Image/art.clip|" .. name) .. "1") or Sprite(), -- 65
+		Sprite(("Image/art.clip|" .. name) .. "2") or Sprite() -- 66
+	} -- 66
+	for ____, frame in ipairs(frames) do -- 68
+		if __TS__StringStartsWith(name, "enemy") then -- 68
+			frame.angle = -90 -- 70
+		end -- 70
+		frame:addTo(node) -- 72
+	end -- 72
+	local i = 0 -- 74
+	node:loop(function() -- 75
+		frames[i + 1].visible = true -- 76
+		i = (i + 1) % 2 -- 77
+		frames[i + 1].visible = false -- 78
+		sleep(interval) -- 79
+		return false -- 80
+	end) -- 75
+end -- 61
+local width = 480 -- 84
+local height = 700 -- 85
+local hw = width / 2 -- 86
+local hh = height / 2 -- 87
+local DesignSceneHeight = height -- 89
+local function updateViewSize() -- 90
+	local camera = tolua.cast(Director.currentCamera, "Camera2D") -- 91
+	if camera then -- 91
+		camera.zoom = View.size.height / DesignSceneHeight -- 93
+	end -- 93
+end -- 90
+updateViewSize() -- 96
+Director.entry:onAppChange(function(settingName) -- 97
+	if settingName == "Size" then -- 97
+		updateViewSize() -- 99
+	end -- 99
+end) -- 97
+local function Enemy(world, score) -- 103
+	local dir = math.random(0, 3) -- 104
+	local angle = math.random(dir * 90 + 25, dir * 90 + 180 - 25) -- 105
+	local pos = Vec2.zero -- 106
+	local minW = -hw - 40 -- 107
+	local maxW = hw + 40 -- 107
+	local minH = -hh - 40 -- 108
+	local maxH = hh + 40 -- 108
+	local randW = math.random(minW, maxW) -- 109
+	local randH = math.random(minH, maxH) -- 110
+	repeat -- 110
+		local ____switch13 = dir -- 110
+		local ____cond13 = ____switch13 == 0 -- 110
+		if ____cond13 then -- 110
+			pos = Vec2(minW, randH) -- 112
+			break -- 112
+		end -- 112
+		____cond13 = ____cond13 or ____switch13 == 1 -- 112
+		if ____cond13 then -- 112
+			pos = Vec2(randW, maxH) -- 113
+			break -- 113
+		end -- 113
+		____cond13 = ____cond13 or ____switch13 == 2 -- 113
+		if ____cond13 then -- 113
+			pos = Vec2(maxW, randH) -- 114
+			break -- 114
+		end -- 114
+		____cond13 = ____cond13 or ____switch13 == 3 -- 114
+		if ____cond13 then -- 114
+			pos = Vec2(randW, minH) -- 115
+			break -- 115
+		end -- 115
+	until true -- 115
+	local radian = math.rad(angle) -- 117
+	local velocity = Vec2( -- 118
+		math.sin(radian), -- 118
+		math.cos(radian) -- 118
+	):normalize():mul(200 + score * 2) -- 118
+	local ____opt_2 = toNode(React.createElement( -- 118
+		"body", -- 118
+		{ -- 118
+			world = world, -- 118
+			group = 0, -- 118
+			type = "Dynamic", -- 118
+			linearAcceleration = Vec2.zero, -- 118
+			x = pos.x, -- 118
+			y = pos.y, -- 118
+			velocityX = velocity.x, -- 118
+			velocityY = velocity.y, -- 118
+			angle = angle, -- 118
+			onMount = function(node) -- 118
+				local enemys = {"enemyFlyingAlt_", "enemySwimming_", "enemyWalking_"} -- 123
+				playAnimation( -- 124
+					node, -- 124
+					enemys[math.random(0, 2) + 1] -- 124
+				) -- 124
+			end -- 122
+		}, -- 122
+		React.createElement("disk-fixture", {radius = 40}) -- 122
+	)) -- 122
+	if ____opt_2 ~= nil then -- 122
+		____opt_2:addTo(world) -- 119
+	end -- 119
+end -- 103
+local function Player(world) -- 131
+	local node -- 132
+	node = toNode(React.createElement( -- 132
+		"body", -- 132
+		{ -- 132
+			world = world, -- 132
+			group = 1, -- 132
+			type = "Dynamic", -- 132
+			linearAcceleration = Vec2.zero, -- 132
+			onContactStart = function(other) -- 132
+				if other.group == 0 then -- 132
+					toNode(React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Game Over", textWidth = 300})) -- 136
+					if node ~= nil then -- 136
+						node:removeFromParent() -- 137
+					end -- 137
+					thread(function() -- 138
+						sleep(2) -- 139
+						Director.entry:removeAllChildren() -- 140
+						toNode(React.createElement(StartUp, nil)) -- 141
+					end) -- 138
+					Audio:stopStream(0.5) -- 143
+					Audio:play("Audio/gameover.wav") -- 144
+				end -- 144
+			end -- 134
+		}, -- 134
+		React.createElement("disk-fixture", {radius = 40}) -- 134
+	)) -- 134
+	if not node then -- 134
+		error("failed to create player!") -- 150
+	end -- 150
+	node:addTo(world) -- 151
+	local x = 0 -- 152
+	local y = 0 -- 152
+	node:gslot( -- 153
+		InputUp, -- 153
+		function() -- 153
+			y = 1 -- 153
+			return y -- 153
+		end -- 153
+	) -- 153
+	node:gslot( -- 154
+		InputDown, -- 154
+		function() -- 154
+			y = -1 -- 154
+			return y -- 154
+		end -- 154
+	) -- 154
+	node:gslot( -- 155
+		InputLeft, -- 155
+		function() -- 155
+			x = -1 -- 155
+			return x -- 155
+		end -- 155
+	) -- 155
+	node:gslot( -- 156
+		InputRight, -- 156
+		function() -- 156
+			x = 1 -- 156
+			return x -- 156
+		end -- 156
+	) -- 156
+	node:loop(function() -- 157
+		local direction = Vec2(x, y):normalize() -- 158
+		if direction.length > 0 then -- 158
+			node.angle = -math.deg(math.atan(direction.y, direction.x)) + 90 -- 160
+		end -- 160
+		local newPos = node.position:add(Vec2(x, y):normalize():mul(10 * 60 * App.deltaTime)) -- 162
+		node.position = newPos:clamp( -- 163
+			Vec2(-hw + 40, -hh + 40), -- 163
+			Vec2(hw - 40, hh - 40) -- 163
+		) -- 163
+		x = 0 -- 164
+		y = 0 -- 164
+		return false -- 165
+	end) -- 157
+	local animNode = Node():addTo(node) -- 167
+	playAnimation(animNode, "playerGrey_walk") -- 168
+end -- 131
+local function Background() -- 171
+	return React.createElement( -- 171
+		"draw-node", -- 171
+		nil, -- 171
+		React.createElement("rect-shape", {width = width, height = height, fillColor = 4283132780}) -- 171
+	) -- 171
+end -- 171
+StartUp = function() -- 173
+	inputManager:popContext() -- 174
+	inputManager:pushContext("UI") -- 175
+	return React.createElement( -- 176
+		React.Fragment, -- 176
+		nil, -- 176
+		React.createElement(Background, nil), -- 176
+		React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Dodge the Creeps!", textWidth = 400}), -- 176
+		React.createElement( -- 176
+			"draw-node", -- 176
+			{y = -150}, -- 176
+			React.createElement("rect-shape", {width = 250, height = 80, fillColor = 4282006074}), -- 176
+			React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 60, text = "Start"}), -- 176
+			React.createElement( -- 176
+				"node", -- 176
+				{ -- 176
+					width = 250, -- 176
+					height = 80, -- 176
+					onTapped = function() return emit(InputStart) end, -- 176
+					onMount = function(node) -- 176
+						node:gslot( -- 184
+							InputStart, -- 184
+							function() -- 184
+								Director.entry:removeAllChildren() -- 185
+								toNode(React.createElement(Game, nil)) -- 186
+							end -- 184
+						) -- 184
+					end -- 183
+				} -- 183
+			) -- 183
+		) -- 183
+	) -- 183
+end -- 173
+Game = function() -- 194
+	inputManager:popContext() -- 195
+	inputManager:pushContext("Game") -- 196
+	local score = 0 -- 197
+	local label = reference() -- 198
+	Audio:playStream("Audio/House In a Forest Loop.ogg", true) -- 199
+	return React.createElement( -- 200
+		"clip-node", -- 200
+		{stencil = React.createElement(Background, nil)}, -- 200
+		React.createElement(Background, nil), -- 200
+		React.createElement( -- 200
+			"physics-world", -- 200
+			{onMount = function(world) -- 200
+				Player(world) -- 204
+				world:once(function() -- 205
+					local msg = toNode(React.createElement("label", {fontName = "Xolonium-Regular", fontSize = 80, text = "Get Ready!", y = 200})) -- 206
+					sleep(1) -- 209
+					if msg ~= nil then -- 209
+						msg:removeFromParent() -- 210
+					end -- 210
+					if label.current then -- 210
+						label.current.visible = true -- 212
+					end -- 212
+					world:loop(function() -- 214
+						sleep(0.5) -- 215
+						Enemy(world, score) -- 216
+						return false -- 217
+					end) -- 214
+				end) -- 205
+			end}, -- 203
+			React.createElement("contact", {groupA = 0, groupB = 0, enabled = false}), -- 203
+			React.createElement("contact", {groupA = 0, groupB = 1, enabled = true}), -- 203
+			React.createElement( -- 203
+				"body", -- 203
+				{ -- 203
+					type = "Static", -- 203
+					group = 1, -- 203
+					onBodyLeave = function() -- 203
+						score = score + 1 -- 224
+						if label.current then -- 224
+							label.current.text = tostring(score) -- 226
+						end -- 226
+					end -- 223
+				}, -- 223
+				React.createElement("rect-fixture", {sensorTag = 0, width = width, height = height}) -- 223
+			) -- 223
+		), -- 223
+		React.createElement("label", { -- 223
+			ref = label, -- 223
+			fontName = "Xolonium-Regular", -- 223
+			fontSize = 60, -- 223
+			text = "0", -- 223
+			y = 300, -- 223
+			visible = false -- 223
+		}) -- 223
+	) -- 223
+end -- 194
+toNode(React.createElement(StartUp, nil)) -- 237
+return ____exports -- 237
