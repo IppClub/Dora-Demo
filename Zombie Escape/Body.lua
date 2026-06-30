@@ -1,4 +1,4 @@
--- [yue]: Dora-Demo/Zombie Escape/Body.yue
+-- [yue]: Body.yue
 local _ENV = Dora(Dora.Platformer) -- 9
 local Data <const> = Data -- 10
 local BodyDef <const> = BodyDef -- 10

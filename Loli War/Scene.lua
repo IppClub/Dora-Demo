@@ -1,4 +1,4 @@
--- [yue]: Dora-Demo/Loli War/Scene.yue
+-- [yue]: Scene.yue
 local _module_0 = nil -- 1
 local _ENV = Dora(Dora.Platformer) -- 9
 local Data <const> = Data -- 10

@@ -1,4 +1,4 @@
--- [yue]: Dora-Demo/Zombie Escape/Logic.yue
+-- [yue]: Logic.yue
 local _ENV = Dora(Dora.Platformer) -- 9
 local Rectangle = require("UI.View.Shape.Rectangle") -- 10
 local Circle = require("UI.View.Shape.Circle") -- 11

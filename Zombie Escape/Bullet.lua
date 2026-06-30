@@ -1,4 +1,4 @@
--- [yue]: Dora-Demo/Zombie Escape/Bullet.yue
+-- [yue]: Bullet.yue
 local _ENV = Dora(Dora.Platformer) -- 9
 local Rectangle = require("UI.View.Shape.Rectangle") -- 10
 local Star = require("UI.View.Shape.Star") -- 11

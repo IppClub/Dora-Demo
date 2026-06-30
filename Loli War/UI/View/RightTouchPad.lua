@@ -1,4 +1,4 @@
--- [xml]: Dora-Demo/Loli War/UI/View/RightTouchPad.xml
+-- [xml]: UI/View/RightTouchPad.xml
 local Button = require("UI.View.Button") -- 2
 return function(args) -- 1
 local _ENV = Dora(args) -- 1

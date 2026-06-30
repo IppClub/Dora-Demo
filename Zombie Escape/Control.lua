@@ -1,4 +1,4 @@
--- [yue]: Dora-Demo/Zombie Escape/Control.yue
+-- [yue]: Control.yue
 local _ENV = Dora(Dora.Platformer) -- 9
 local CircleButton = require("UI.Control.Basic.CircleButton") -- 10
 local Data <const> = Data -- 11

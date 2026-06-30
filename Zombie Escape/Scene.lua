@@ -1,4 +1,4 @@
--- [yue]: Dora-Demo/Zombie Escape/Scene.yue
+-- [yue]: Scene.yue
 local _ENV = Dora(Dora.Platformer) -- 9
 local Rectangle = require("UI.View.Shape.Rectangle") -- 10
 local Data <const> = Data -- 11

@@ -1,4 +1,4 @@
--- [yue]: Dora-Demo/Dismantlism/init.yue
+-- [yue]: init.yue
 local _ENV = Dora -- 11
 local Path <const> = Path -- 12
 local Content <const> = Content -- 12

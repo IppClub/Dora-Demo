@@ -1,4 +1,4 @@
--- [yue]: Dora-Demo/Touch the Sky/init.yue
+-- [yue]: init.yue
 local _ENV = Dora(Dora.ImGui) -- 11
 local Path <const> = Path -- 12
 local Content <const> = Content -- 12

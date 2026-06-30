@@ -1,4 +1,4 @@
--- [yue]: Dora-Demo/AI Fighter/init.yue
+-- [yue]: init.yue
 local _ENV = Dora(Dora.ImGui, Dora.Platformer, Dora.Platformer.Decision) -- 11
 local CircleButton = require("UI.Control.Basic.CircleButton") -- 16
 local Data <const> = Data -- 17

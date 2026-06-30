@@ -1,4 +1,4 @@
--- [xml]: Dora-Demo/Loli War/UI/View/HPWheel.xml
+-- [xml]: UI/View/HPWheel.xml
 local Digit = require("UI.Control.Digit") -- 2
 return function(args) -- 1
 local _ENV = Dora(args) -- 1
