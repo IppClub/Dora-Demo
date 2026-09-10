@@ -182,7 +182,7 @@ root:addChild((function() -- 90
 	local _with_0 = AlignNode() -- 90
 	_with_0:css('margin: 0, 10, 40; height: 104; flex-direction: row; justify-content: space-between') -- 91
 	local _exp_0 = App.platform -- 92
-	if "iOS" == _exp_0 or "Android" == _exp_0 then -- 93
+	if "iOS" == _exp_0 or "Android" == _exp_0 or "Web" == _exp_0 then -- 93
 		_with_0:addChild((function() -- 94
 			local _with_1 = AlignNode() -- 94
 			_with_1:css('height: 104; width: 0') -- 95

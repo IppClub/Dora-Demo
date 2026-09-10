@@ -182,20 +182,22 @@ switchScene = (init) ->
 				Opacity 0.5, 0, 1
 			)
 		for body in *dailyBodies
-			with body.children[1]
-				if .actionCount == 0
-					\perform Sequence(
-						Show!
-						Scale 0.5, 1, 0, Ease.OutBack
-						Hide!
-					)
+			if body.children and #body.children > 0
+				with body.children[1]
+					if .actionCount == 0
+						\perform Sequence(
+							Show!
+							Scale 0.5, 1, 0, Ease.OutBack
+							Hide!
+						)
 		for body in *spaceBodies
-			with body.children[1]
-				if .actionCount == 0
-					\perform Sequence(
-						Show!
-						Scale 0.5, 0, 1, Ease.OutBack
-					)
+			if body.children and #body.children > 0
+				with body.children[1]
+					if .actionCount == 0
+						\perform Sequence(
+							Show!
+							Scale 0.5, 0, 1, Ease.OutBack
+						)
 	else
 		Audio\playStream "Audio/Dismantlism Daily.ogg", true, 0.2
 		unless init
@@ -209,20 +211,22 @@ switchScene = (init) ->
 				Opacity 0.5, 0, 1
 			)
 		for body in *spaceBodies
-			with body.children[1]
-				if .actionCount == 0
-					\perform Sequence(
-						Show!
-						Scale 0.5, 1, 0, Ease.OutBack
-						Hide!
-					)
+			if body.children and #body.children > 0
+				with body.children[1]
+					if .actionCount == 0
+						\perform Sequence(
+							Show!
+							Scale 0.5, 1, 0, Ease.OutBack
+							Hide!
+						)
 		for body in *dailyBodies
-			with body.children[1]
-				if .actionCount == 0
-					\perform Sequence(
-						Show!
-						Scale 0.5, 0, 1, Ease.OutBack
-					)
+			if body.children and #body.children > 0
+				with body.children[1]
+					if .actionCount == 0
+						\perform Sequence(
+							Show!
+							Scale 0.5, 0, 1, Ease.OutBack
+						)
 
 restartScene = nil
 gameEnded = false
@@ -349,6 +353,8 @@ restartScene = ->
 	scoreTxt.text = "0"
 	isSpace = false
 	gameEnded = false
+	spaceBodies = []
+	dailyBodies = []
 	if moveJoint
 		moveJoint\destroy!
 		moveJoint = nil

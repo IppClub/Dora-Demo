@@ -90,7 +90,7 @@ with root := AlignNode true
 	\addChild with AlignNode!
 		\css 'margin: 0, 10, 40; height: 104; flex-direction: row; justify-content: space-between'
 		switch App.platform
-			when "iOS", "Android"
+			when "iOS", "Android", "Web"
 				\addChild with AlignNode!
 					\css 'height: 104; width: 0'
 					\addChild with LeftTouchPad!
