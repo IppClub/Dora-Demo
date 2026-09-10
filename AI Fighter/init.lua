@@ -1116,715 +1116,746 @@ local playerGroup = Group({ -- 837
 	"player", -- 837
 	"unit" -- 837
 }) -- 837
-local updatePlayerControl -- 838
-updatePlayerControl = function(key, flag) -- 838
-	return playerGroup:each(function(self) -- 838
-		self.unit.data[key] = flag -- 838
-	end) -- 838
-end -- 838
-Director.ui:addChild((function() -- 840
-	local _with_0 = AlignNode(true) -- 840
-	_with_0:css('flex-direction: column') -- 841
-	_with_0:schedule(function() -- 842
-		local width, height -- 843
-		do -- 843
-			local _obj_0 = App.visualSize -- 843
-			width, height = _obj_0.width, _obj_0.height -- 843
-		end -- 843
-		SetNextWindowPos(Vec2(10, 10), "FirstUseEver") -- 844
-		SetNextWindowSize(Vec2(350, 160), "FirstUseEver") -- 845
-		return Begin("AI军团", { -- 846
-			"NoResize", -- 846
-			"NoSavedSettings" -- 846
-		}, function() -- 846
-			local isPC -- 847
-			do -- 847
-				local _exp_0 = App.platform -- 847
-				if "macOS" == _exp_0 or "Windows" == _exp_0 or "Linux" == _exp_0 or "Web" == _exp_0 then -- 848
-					isPC = true -- 848
-				else -- 849
-					isPC = false -- 849
-				end -- 847
-			end -- 847
-			return TextWrapped("点击你的学员部队配备装备，并亲自进行战斗方法的训练，最后带领部队挑战敌人。\n学员战斗AI通过玩家操作自动学习生成。" .. tostring(isPC and '训练操作按键：向左A，向右D，闪避E，攻击J，跳跃K' or '')) -- 850
-		end) -- 846
-	end) -- 842
-	_with_0:addChild((function() -- 851
-		local _with_1 = AlignNode() -- 851
-		_with_1:css("height: 30%") -- 852
-		return _with_1 -- 851
-	end)()) -- 851
-	_with_0:addChild((function() -- 853
-		local _with_1 = AlignNode() -- 853
-		_with_1:css("height: 40%; align-items: center; justify-content: center") -- 854
-		_with_1:addChild((function() -- 855
-			local _with_2 = AlignNode() -- 855
-			_with_2:css('height: 1; width: 0') -- 856
-			_with_2:addChild((function() -- 857
-				local _with_3 = Node() -- 857
-				_with_3.visible = false -- 858
-				_with_3.scaleX = 0.5 -- 859
-				_with_3.scaleY = 0.5 -- 859
-				_with_3:gslot("ShowTraining", function(show) -- 860
-					_with_3.visible = show -- 861
-					if show then -- 862
-						return _with_3:addChild((function() -- 863
-							local _with_4 = CircleButton({ -- 864
-								text = "训练\n结束！", -- 864
-								y = -150, -- 865
-								radius = 80, -- 866
-								fontName = "sarasa-mono-sc-regular", -- 867
-								fontSize = 48 -- 868
-							}) -- 863
-							_with_4:slot("Tapped", function() -- 870
-								emit("ShowTraining", false) -- 871
-								Group({ -- 872
-									"player" -- 872
-								}):each(function(e) -- 872
-									if e.charSet then -- 873
-										emit("TrainAI", e.charSet) -- 874
-										return e.unit:removeFromParent() -- 875
-									end -- 873
-								end) -- 872
-								Group({ -- 876
-									"boss" -- 876
-								}):each(function(e) -- 876
-									return e.unit:removeFromParent() -- 877
-								end) -- 876
-								return emit("ShowSetting", true) -- 878
-							end) -- 870
-							return _with_4 -- 863
-						end)()) -- 863
-					else -- 880
-						return _with_3:removeAllChildren() -- 880
-					end -- 862
-				end) -- 860
-				_with_3:gslot("ShowFight", function(show) -- 881
-					_with_3.visible = show -- 882
-					if show then -- 883
-						return _with_3:addChild((function() -- 884
-							local _with_4 = CircleButton({ -- 885
-								text = "离开\n战斗", -- 885
-								y = -150, -- 886
-								radius = 80, -- 887
-								fontName = "sarasa-mono-sc-regular", -- 888
-								fontSize = 48 -- 889
-							}) -- 884
-							_with_4:slot("Tapped", function() -- 891
-								Group({ -- 892
-									"unitDef" -- 892
-								}):each(function(e) -- 892
-									local _obj_0 = e.unit -- 893
-									if _obj_0 ~= nil then -- 893
-										return _obj_0:removeFromParent() -- 893
-									end -- 893
-									return nil -- 893
-								end) -- 892
-								emit("ShowSetting", true) -- 894
-								return thread(function() -- 895
-									return emit("ShowFight", false) -- 895
-								end) -- 895
-							end) -- 891
-							return _with_4 -- 884
-						end)()) -- 884
-					else -- 897
-						return _with_3:removeAllChildren() -- 897
-					end -- 883
-				end) -- 881
-				return _with_3 -- 857
-			end)()) -- 857
-			_with_2:addChild((function() -- 898
-				local _with_3 = Node() -- 898
-				_with_3:gslot("ShowSetting", function(show) -- 899
-					_with_3.visible = show -- 899
-				end) -- 899
-				_with_3.scaleX = 0.5 -- 900
-				_with_3.scaleY = 0.5 -- 900
-				_with_3:addChild((function() -- 901
-					local _with_4 = Model("Model/bossp.model") -- 901
-					_with_4.x = 500 -- 902
-					_with_4.y = 100 -- 903
-					_with_4.fliped = true -- 904
-					_with_4.speed = 0.8 -- 905
-					_with_4.recovery = 0.2 -- 906
-					_with_4.scaleX = 2 -- 907
-					_with_4.scaleY = 2 -- 907
-					_with_4:play("idle", true) -- 908
-					return _with_4 -- 901
-				end)()) -- 901
-				for i = 1, #fighterFigures do -- 909
-					local fighter = fighterFigures[i] -- 910
-					_with_3:addChild((function() -- 911
-						fighter.x = -500 + (i - 1) * 200 -- 912
-						return fighter -- 911
-					end)()) -- 911
-				end -- 909
-				_with_3:addChild((function() -- 913
-					local _with_4 = CircleButton({ -- 914
-						text = "开战！", -- 914
-						y = -150, -- 915
-						radius = 80, -- 916
-						fontName = "sarasa-mono-sc-regular", -- 917
-						fontSize = 48 -- 918
-					}) -- 913
-					local showItems -- 920
-					showItems = function(show) -- 920
-						for _index_0 = 1, #fighterFigures do -- 921
-							local fighter = fighterFigures[_index_0] -- 921
-							fighter.touchEnabled = not show -- 922
-						end -- 921
-						_with_4.visible = not show -- 923
-					end -- 920
-					_with_4:gslot("ShowFight", showItems) -- 924
-					_with_4:gslot("ShowTraining", showItems) -- 925
-					_with_4:slot("Tapped", function() -- 926
-						if not _with_4.visible then -- 927
-							return -- 927
-						end -- 927
-						for i = 1, #characters do -- 928
-							Entity({ -- 930
-								unitDef = "fighter", -- 930
-								charSet = i, -- 931
-								order = PlayerLayer, -- 932
-								position = Vec2(-600 + (i - 1) * 200, 400), -- 933
-								group = PlayerGroup, -- 934
-								faceRight = true, -- 935
-								decisionTree = "AI_Learned", -- 936
-								player = true -- 937
-							}) -- 929
+local playerInput = { -- 838
+	keyboard = { }, -- 838
+	virtual = { } -- 838
+} -- 838
+local updatePlayerControl -- 839
+updatePlayerControl = function(key, flag, source) -- 839
+	if source == nil then -- 839
+		source = "virtual" -- 839
+	end -- 839
+	playerInput[source][key] = flag -- 840
+	return playerGroup:each(function(self) -- 841
+		self.unit.data[key] = (playerInput.keyboard[key] or playerInput.virtual[key]) == true -- 841
+	end) -- 841
+end -- 839
+Director.ui:gslot("ShowTraining", function() -- 842
+	local _list_0 = { -- 843
+		"keyboard", -- 843
+		"virtual" -- 843
+	} -- 843
+	for _index_0 = 1, #_list_0 do -- 843
+		local source = _list_0[_index_0] -- 843
+		local _list_1 = { -- 844
+			"keyLeft", -- 844
+			"keyRight", -- 844
+			"keyUp", -- 844
+			"keyF", -- 844
+			"keyE" -- 844
+		} -- 844
+		for _index_1 = 1, #_list_1 do -- 844
+			local key = _list_1[_index_1] -- 844
+			updatePlayerControl(key, false, source) -- 845
+		end -- 844
+	end -- 843
+end) -- 842
+Director.ui:addChild((function() -- 847
+	local _with_0 = AlignNode(true) -- 847
+	_with_0:css('flex-direction: column') -- 848
+	_with_0:schedule(function() -- 849
+		local width, height -- 850
+		do -- 850
+			local _obj_0 = App.visualSize -- 850
+			width, height = _obj_0.width, _obj_0.height -- 850
+		end -- 850
+		SetNextWindowPos(Vec2(10, 10), "FirstUseEver") -- 851
+		SetNextWindowSize(Vec2(350, 160), "FirstUseEver") -- 852
+		return Begin("AI军团", { -- 853
+			"NoResize", -- 853
+			"NoSavedSettings" -- 853
+		}, function() -- 853
+			local isPC -- 854
+			do -- 854
+				local _exp_0 = App.platform -- 854
+				if "macOS" == _exp_0 or "Windows" == _exp_0 or "Linux" == _exp_0 or "Web" == _exp_0 then -- 855
+					isPC = true -- 855
+				else -- 856
+					isPC = false -- 856
+				end -- 854
+			end -- 854
+			return TextWrapped("点击你的学员部队配备装备，并亲自进行战斗方法的训练，最后带领部队挑战敌人。\n学员战斗AI通过玩家操作自动学习生成。" .. tostring(isPC and '训练操作按键：向左A，向右D，闪避E，攻击J，跳跃K' or '')) -- 857
+		end) -- 853
+	end) -- 849
+	_with_0:addChild((function() -- 858
+		local _with_1 = AlignNode() -- 858
+		_with_1:css("height: 30%") -- 859
+		return _with_1 -- 858
+	end)()) -- 858
+	_with_0:addChild((function() -- 860
+		local _with_1 = AlignNode() -- 860
+		_with_1:css("height: 40%; align-items: center; justify-content: center") -- 861
+		_with_1:addChild((function() -- 862
+			local _with_2 = AlignNode() -- 862
+			_with_2:css('height: 1; width: 0') -- 863
+			_with_2:addChild((function() -- 864
+				local _with_3 = Node() -- 864
+				_with_3.visible = false -- 865
+				_with_3.scaleX = 0.5 -- 866
+				_with_3.scaleY = 0.5 -- 866
+				_with_3:gslot("ShowTraining", function(show) -- 867
+					_with_3.visible = show -- 868
+					if show then -- 869
+						return _with_3:addChild((function() -- 870
+							local _with_4 = CircleButton({ -- 871
+								text = "训练\n结束！", -- 871
+								y = -150, -- 872
+								radius = 80, -- 873
+								fontName = "sarasa-mono-sc-regular", -- 874
+								fontSize = 48 -- 875
+							}) -- 870
+							_with_4:slot("Tapped", function() -- 877
+								emit("ShowTraining", false) -- 878
+								Group({ -- 879
+									"player" -- 879
+								}):each(function(e) -- 879
+									if e.charSet then -- 880
+										emit("TrainAI", e.charSet) -- 881
+										return e.unit:removeFromParent() -- 882
+									end -- 880
+								end) -- 879
+								Group({ -- 883
+									"boss" -- 883
+								}):each(function(e) -- 883
+									return e.unit:removeFromParent() -- 884
+								end) -- 883
+								return emit("ShowSetting", true) -- 885
+							end) -- 877
+							return _with_4 -- 870
+						end)()) -- 870
+					else -- 887
+						return _with_3:removeAllChildren() -- 887
+					end -- 869
+				end) -- 867
+				_with_3:gslot("ShowFight", function(show) -- 888
+					_with_3.visible = show -- 889
+					if show then -- 890
+						return _with_3:addChild((function() -- 891
+							local _with_4 = CircleButton({ -- 892
+								text = "离开\n战斗", -- 892
+								y = -150, -- 893
+								radius = 80, -- 894
+								fontName = "sarasa-mono-sc-regular", -- 895
+								fontSize = 48 -- 896
+							}) -- 891
+							_with_4:slot("Tapped", function() -- 898
+								Group({ -- 899
+									"unitDef" -- 899
+								}):each(function(e) -- 899
+									local _obj_0 = e.unit -- 900
+									if _obj_0 ~= nil then -- 900
+										return _obj_0:removeFromParent() -- 900
+									end -- 900
+									return nil -- 900
+								end) -- 899
+								emit("ShowSetting", true) -- 901
+								return thread(function() -- 902
+									return emit("ShowFight", false) -- 902
+								end) -- 902
+							end) -- 898
+							return _with_4 -- 891
+						end)()) -- 891
+					else -- 904
+						return _with_3:removeAllChildren() -- 904
+					end -- 890
+				end) -- 888
+				return _with_3 -- 864
+			end)()) -- 864
+			_with_2:addChild((function() -- 905
+				local _with_3 = Node() -- 905
+				_with_3:gslot("ShowSetting", function(show) -- 906
+					_with_3.visible = show -- 906
+				end) -- 906
+				_with_3.scaleX = 0.5 -- 907
+				_with_3.scaleY = 0.5 -- 907
+				_with_3:addChild((function() -- 908
+					local _with_4 = Model("Model/bossp.model") -- 908
+					_with_4.x = 500 -- 909
+					_with_4.y = 100 -- 910
+					_with_4.fliped = true -- 911
+					_with_4.speed = 0.8 -- 912
+					_with_4.recovery = 0.2 -- 913
+					_with_4.scaleX = 2 -- 914
+					_with_4.scaleY = 2 -- 914
+					_with_4:play("idle", true) -- 915
+					return _with_4 -- 908
+				end)()) -- 908
+				for i = 1, #fighterFigures do -- 916
+					local fighter = fighterFigures[i] -- 917
+					_with_3:addChild((function() -- 918
+						fighter.x = -500 + (i - 1) * 200 -- 919
+						return fighter -- 918
+					end)()) -- 918
+				end -- 916
+				_with_3:addChild((function() -- 920
+					local _with_4 = CircleButton({ -- 921
+						text = "开战！", -- 921
+						y = -150, -- 922
+						radius = 80, -- 923
+						fontName = "sarasa-mono-sc-regular", -- 924
+						fontSize = 48 -- 925
+					}) -- 920
+					local showItems -- 927
+					showItems = function(show) -- 927
+						for _index_0 = 1, #fighterFigures do -- 928
+							local fighter = fighterFigures[_index_0] -- 928
+							fighter.touchEnabled = not show -- 929
 						end -- 928
-						Entity({ -- 939
-							unitDef = "boss", -- 939
-							order = EnemyLayer, -- 940
-							position = Vec2(400, 400), -- 941
-							group = EnemyGroup, -- 942
-							faceRight = false, -- 943
-							boss = true -- 944
-						}) -- 938
-						emit("ShowSetting", false) -- 945
-						return emit("ShowFight", true) -- 946
-					end) -- 926
-					return _with_4 -- 913
-				end)()) -- 913
-				return _with_3 -- 898
-			end)()) -- 898
-			return _with_2 -- 855
-		end)()) -- 855
-		return _with_1 -- 853
-	end)()) -- 853
-	local _exp_0 = App.platform -- 947
-	if "iOS" == _exp_0 or "Android" == _exp_0 or "Web" == _exp_0 then -- 948
-		_with_0:addChild((function() -- 949
-			local _with_1 = AlignNode() -- 949
-			_with_1:css("\n					width: auto;\n					height: 30%;\n					padding-bottom: 40;\n					margin: 0, 10, 0;\n					flex-direction: row;\n					justify-content: space-between\n				") -- 950
-			_with_1:gslot("ShowTraining", function(show) -- 958
-				_with_1.visible = show -- 958
-			end) -- 958
-			_with_1:addChild((function() -- 959
-				local _with_2 = AlignNode() -- 959
-				_with_2:css('height: 100%; width: 0') -- 960
-				_with_2:addChild((function() -- 961
-					local _with_3 = Menu() -- 961
-					_with_3.anchor = Vec2.zero -- 962
-					_with_3.size = Size(130, 60) -- 963
-					_with_3:addChild((function() -- 964
-						local _with_4 = CircleButton({ -- 965
-							text = "左", -- 965
-							radius = 60, -- 966
-							fontSize = math.floor(36) -- 967
-						}) -- 964
-						_with_4.scaleX = 0.5 -- 969
-						_with_4.scaleY = 0.5 -- 969
-						_with_4.anchor = Vec2.zero -- 970
-						_with_4:slot("TapBegan", function() -- 971
-							return updatePlayerControl("keyLeft", true) -- 971
-						end) -- 971
-						_with_4:slot("TapEnded", function() -- 972
-							return updatePlayerControl("keyLeft", false) -- 972
-						end) -- 972
-						return _with_4 -- 964
-					end)()) -- 964
-					_with_3:addChild((function() -- 973
-						local _with_4 = CircleButton({ -- 974
-							text = "右", -- 974
-							x = 70, -- 975
-							radius = 60, -- 976
-							fontSize = math.floor(36) -- 977
-						}) -- 973
-						_with_4.scaleX = 0.5 -- 979
-						_with_4.scaleY = 0.5 -- 979
-						_with_4.anchor = Vec2.zero -- 980
-						_with_4:slot("TapBegan", function() -- 981
-							return updatePlayerControl("keyRight", true) -- 981
-						end) -- 981
-						_with_4:slot("TapEnded", function() -- 982
-							return updatePlayerControl("keyRight", false) -- 982
-						end) -- 982
-						return _with_4 -- 973
-					end)()) -- 973
-					return _with_3 -- 961
-				end)()) -- 961
-				return _with_2 -- 959
-			end)()) -- 959
-			_with_1:addChild((function() -- 983
-				local _with_2 = AlignNode() -- 983
-				_with_2:css('height: 100%; width: 0') -- 984
-				_with_2:addChild((function() -- 985
-					local _with_3 = Menu() -- 985
-					_with_3.anchor = Vec2(1, 0) -- 986
-					_with_3.size = Size(200, 60) -- 987
-					_with_3:addChild((function() -- 988
-						local _with_4 = CircleButton({ -- 989
-							text = "闪", -- 989
-							radius = 60, -- 990
-							fontSize = math.floor(36) -- 991
-						}) -- 988
-						_with_4.scaleX = 0.5 -- 993
-						_with_4.scaleY = 0.5 -- 993
-						_with_4.anchor = Vec2.zero -- 994
-						_with_4:slot("TapBegan", function() -- 995
-							return updatePlayerControl("keyE", true) -- 995
-						end) -- 995
-						_with_4:slot("TapEnded", function() -- 996
-							return updatePlayerControl("keyE", false) -- 996
-						end) -- 996
-						return _with_4 -- 988
-					end)()) -- 988
-					_with_3:addChild((function() -- 997
-						local _with_4 = CircleButton({ -- 998
-							text = "跳", -- 998
-							x = 70, -- 999
-							radius = 60, -- 1000
-							fontSize = math.floor(36) -- 1001
-						}) -- 997
-						_with_4.scaleX = 0.5 -- 1003
-						_with_4.scaleY = 0.5 -- 1003
-						_with_4.anchor = Vec2.zero -- 1004
-						_with_4:slot("TapBegan", function() -- 1005
-							return updatePlayerControl("keyUp", true) -- 1005
-						end) -- 1005
-						_with_4:slot("TapEnded", function() -- 1006
-							return updatePlayerControl("keyUp", false) -- 1006
-						end) -- 1006
-						return _with_4 -- 997
-					end)()) -- 997
-					_with_3:addChild((function() -- 1007
-						local _with_4 = CircleButton({ -- 1008
-							text = "打", -- 1008
-							x = 140, -- 1009
-							radius = 60, -- 1010
-							fontSize = math.floor(36) -- 1011
-						}) -- 1007
-						_with_4.scaleX = 0.5 -- 1013
-						_with_4.scaleY = 0.5 -- 1013
-						_with_4.anchor = Vec2.zero -- 1014
-						_with_4:slot("TapBegan", function() -- 1015
-							return updatePlayerControl("keyF", true) -- 1015
-						end) -- 1015
-						_with_4:slot("TapEnded", function() -- 1016
-							return updatePlayerControl("keyF", false) -- 1016
-						end) -- 1016
-						return _with_4 -- 1007
-					end)()) -- 1007
-					return _with_3 -- 985
-				end)()) -- 985
-				return _with_2 -- 983
-			end)()) -- 983
-			return _with_1 -- 949
-		end)()) -- 949
-	elseif "macOS" == _exp_0 or "Windows" == _exp_0 or "Linux" == _exp_0 then -- 1017
-		local _with_1 = Node() -- 1018
-		_with_1:schedule(function() -- 1019
-			updatePlayerControl("keyLeft", Keyboard:isKeyPressed("A")) -- 1020
-			updatePlayerControl("keyRight", Keyboard:isKeyPressed("D")) -- 1021
-			updatePlayerControl("keyUp", Keyboard:isKeyPressed("K")) -- 1022
-			updatePlayerControl("keyF", Keyboard:isKeyPressed("J")) -- 1023
-			return updatePlayerControl("keyE", Keyboard:isKeyPressed("E")) -- 1024
-		end) -- 1019
-	end -- 947
-	return _with_0 -- 840
-end)()) -- 840
-do -- 1026
-	local _with_0 = Node() -- 1026
-	_with_0:schedule(function() -- 1027
-		local width, height -- 1028
-		do -- 1028
-			local _obj_0 = App.visualSize -- 1028
-			width, height = _obj_0.width, _obj_0.height -- 1028
-		end -- 1028
-		for _index_0 = 1, #fighterPanels do -- 1029
-			local panel = fighterPanels[_index_0] -- 1029
-			panel() -- 1029
-		end -- 1029
-	end) -- 1027
-end -- 1026
-local rangeAttackEnd -- 1031
-rangeAttackEnd = function(name, playable) -- 1031
-	if name == "range" then -- 1032
-		return playable.parent:stop() -- 1032
-	end -- 1032
-end -- 1031
-UnitAction:add("range", { -- 1035
-	priority = 3, -- 1035
-	reaction = 10, -- 1036
-	recovery = 0.1, -- 1037
-	queued = true, -- 1038
-	available = function() -- 1039
-		return true -- 1039
-	end, -- 1039
-	create = function(self) -- 1040
-		local attackSpeed, targetAllow, attackPower, damageType, attackBase, attackBonus, attackFactor -- 1041
-		do -- 1041
-			local _obj_0 = self.entity -- 1046
-			attackSpeed, targetAllow, attackPower, damageType, attackBase, attackBonus, attackFactor = _obj_0.attackSpeed, _obj_0.targetAllow, _obj_0.attackPower, _obj_0.damageType, _obj_0.attackBase, _obj_0.attackBonus, _obj_0.attackFactor -- 1041
-		end -- 1041
-		do -- 1047
-			local _with_0 = self.playable -- 1047
-			_with_0.speed = attackSpeed -- 1048
-			_with_0:play("range") -- 1049
-			_with_0:slot("AnimationEnd", rangeAttackEnd) -- 1050
-		end -- 1047
-		return once(function(self) -- 1051
-			local bulletDef = Store[self.unitDef.bulletType] -- 1052
-			local onAttack -- 1053
-			onAttack = function() -- 1053
-				local _with_0 = Bullet(bulletDef, self) -- 1054
-				_with_0.targetAllow = targetAllow -- 1055
-				_with_0:slot("HitTarget", function(bullet, target, pos) -- 1056
-					do -- 1057
-						local _with_1 = target.data -- 1057
-						_with_1.hitPoint = pos -- 1058
-						_with_1.hitPower = attackPower -- 1059
-						_with_1.hitFromRight = bullet.velocityX < 0 -- 1060
-					end -- 1057
-					local entity = target.entity -- 1061
-					local factor = Data:getDamageFactor(damageType, entity.defenceType) -- 1062
-					local damage = (attackBase + attackBonus) * (attackFactor + factor) -- 1063
-					entity.hp = entity.hp - damage -- 1064
-					bullet.hitStop = true -- 1065
-				end) -- 1056
-				_with_0:addTo(self.world, self.order) -- 1066
-				return _with_0 -- 1054
-			end -- 1053
-			sleep(0.5 * 28.0 / 30.0 / attackSpeed) -- 1067
-			onAttack() -- 1068
-			while true do -- 1069
-				sleep() -- 1069
-			end -- 1069
-		end) -- 1051
-	end, -- 1040
-	stop = function(self) -- 1070
-		return self.playable:slot("AnimationEnd"):remove(rangeAttackEnd) -- 1071
-	end -- 1070
-}) -- 1034
-local BigArrow -- 1073
-do -- 1073
-	local _with_0 = BulletDef() -- 1073
-	_with_0.tag = "" -- 1074
-	_with_0.endEffect = "" -- 1075
-	_with_0.lifeTime = 5 -- 1076
-	_with_0.damageRadius = 0 -- 1077
-	_with_0.highSpeedFix = false -- 1078
-	_with_0.gravity = Vec2(0, -10) -- 1079
-	_with_0.face = Face("Model/patreon.clip|item_arrow", Vec2(-100, 0), 2) -- 1080
-	_with_0:setAsCircle(10) -- 1081
-	_with_0:setVelocity(25, 800) -- 1082
-	BigArrow = _with_0 -- 1073
-end -- 1073
-UnitAction:add("multiArrow", { -- 1085
-	priority = 3, -- 1085
-	reaction = 10, -- 1086
-	recovery = 0.1, -- 1087
-	queued = true, -- 1088
-	available = function() -- 1089
-		return true -- 1089
-	end, -- 1089
-	create = function(self) -- 1090
-		local attackSpeed, targetAllow, attackPower, damageType, attackBase, attackBonus, attackFactor -- 1091
-		do -- 1091
-			local _obj_0 = self.entity -- 1096
-			attackSpeed, targetAllow, attackPower, damageType, attackBase, attackBonus, attackFactor = _obj_0.attackSpeed, _obj_0.targetAllow, _obj_0.attackPower, _obj_0.damageType, _obj_0.attackBase, _obj_0.attackBonus, _obj_0.attackFactor -- 1091
-		end -- 1091
-		do -- 1097
-			local _with_0 = self.playable -- 1097
-			_with_0.speed = attackSpeed -- 1098
-			_with_0:play("range") -- 1099
-			_with_0:slot("AnimationEnd", rangeAttackEnd) -- 1100
-		end -- 1097
-		return once(function(self) -- 1101
-			local onAttack -- 1102
-			onAttack = function(angle, speed) -- 1102
-				BigArrow:setVelocity(angle, speed) -- 1103
-				local _with_0 = Bullet(BigArrow, self) -- 1104
-				_with_0.targetAllow = targetAllow -- 1105
-				_with_0:slot("HitTarget", function(bullet, target, pos) -- 1106
-					do -- 1107
-						local _with_1 = target.data -- 1107
-						_with_1.hitPoint = pos -- 1108
-						_with_1.hitPower = attackPower -- 1109
-						_with_1.hitFromRight = bullet.velocityX < 0 -- 1110
-					end -- 1107
-					local entity = target.entity -- 1111
-					local factor = Data:getDamageFactor(damageType, entity.defenceType) -- 1112
-					local damage = (attackBase + attackBonus) * (attackFactor + factor) -- 1113
-					entity.hp = entity.hp - damage -- 1114
-					bullet.hitStop = true -- 1115
-				end) -- 1106
-				_with_0:addTo(self.world, self.order) -- 1116
-				return _with_0 -- 1104
-			end -- 1102
-			sleep(30.0 / 60.0 / attackSpeed) -- 1117
-			onAttack(30, 1100) -- 1118
-			onAttack(10, 1000) -- 1119
-			onAttack(-10, 900) -- 1120
-			onAttack(-30, 800) -- 1121
-			onAttack(-50, 700) -- 1122
-			while true do -- 1123
-				sleep() -- 1123
-			end -- 1123
-		end) -- 1101
-	end, -- 1090
-	stop = function(self) -- 1124
-		return self.playable:slot("AnimationEnd"):remove(rangeAttackEnd) -- 1125
-	end -- 1124
-}) -- 1084
-UnitAction:add("fallOff", { -- 1128
-	priority = 1, -- 1128
-	reaction = 1, -- 1129
-	recovery = 0, -- 1130
-	available = function(self) -- 1131
-		return not self.onSurface -- 1131
-	end, -- 1131
-	create = function(self) -- 1132
-		if self.velocityY <= 0 then -- 1133
-			self.data.fallDown = true -- 1134
-			local _with_0 = self.playable -- 1135
-			_with_0.speed = 2.5 -- 1136
-			_with_0:play("idle") -- 1137
-		else -- 1138
-			self.data.fallDown = false -- 1138
-		end -- 1133
-		return function(self) -- 1139
-			if self.onSurface then -- 1140
-				return true -- 1140
-			end -- 1140
-			if not self.data.fallDown and self.velocityY <= 0 then -- 1141
-				self.data.fallDown = true -- 1142
-				local _with_0 = self.playable -- 1143
-				_with_0.speed = 2.5 -- 1144
-				_with_0:play("idle") -- 1145
-			end -- 1141
-			return false -- 1146
-		end -- 1139
-	end -- 1132
-}) -- 1127
-UnitAction:add("evade", { -- 1149
-	priority = 10, -- 1149
-	reaction = 10, -- 1150
-	recovery = 0, -- 1151
-	queued = true, -- 1152
-	available = function() -- 1153
-		return true -- 1153
-	end, -- 1153
-	create = function(self) -- 1154
-		do -- 1155
-			local _with_0 = self.playable -- 1155
-			_with_0.speed = 1.0 -- 1156
-			_with_0.recovery = 0.0 -- 1157
-			_with_0:play("bevade") -- 1158
-		end -- 1155
-		return once(function(self) -- 1159
-			local group = self.group -- 1160
-			self.group = Data.groupHide -- 1161
-			local dir = self.faceRight and -1 or 1 -- 1162
-			cycle(0.2, function() -- 1163
-				self.velocityX = 800 * dir -- 1163
-			end) -- 1163
-			self.group = group -- 1164
-			do -- 1165
-				local _with_0 = self.playable -- 1165
-				_with_0.speed = 1.0 -- 1166
-				_with_0:play("idle") -- 1167
-			end -- 1165
-			sleep(1) -- 1168
-			return true -- 1169
-		end) -- 1159
-	end -- 1154
-}) -- 1148
-local spearAttackEnd -- 1171
-spearAttackEnd = function(name, playable) -- 1171
-	if name == "spear" then -- 1172
-		return playable.parent:stop() -- 1172
-	end -- 1172
-end -- 1171
-UnitAction:add("spearAttack", { -- 1175
-	priority = 3, -- 1175
-	reaction = 10, -- 1176
-	recovery = 0.1, -- 1177
-	queued = true, -- 1178
-	available = function() -- 1179
-		return true -- 1179
-	end, -- 1179
-	create = function(self) -- 1180
-		local attackSpeed, attackPower, damageType, attackBase, attackBonus, attackFactor -- 1181
-		do -- 1181
-			local _obj_0 = self.entity -- 1185
-			attackSpeed, attackPower, damageType, attackBase, attackBonus, attackFactor = _obj_0.attackSpeed, _obj_0.attackPower, _obj_0.damageType, _obj_0.attackBase, _obj_0.attackBonus, _obj_0.attackFactor -- 1181
-		end -- 1181
-		do -- 1186
-			local _with_0 = self.playable -- 1186
-			_with_0.speed = attackSpeed -- 1187
-			_with_0.recovery = 0.2 -- 1188
-			_with_0:play("spear") -- 1189
-			_with_0:slot("AnimationEnd", spearAttackEnd) -- 1190
-		end -- 1186
-		return once(function(self) -- 1191
-			sleep(50.0 / 60.0) -- 1192
-			local dir = self.faceRight and 0 or -900 -- 1193
-			local origin = self.position - Vec2(0, 205) + Vec2(dir, 0) -- 1194
-			local size = Size(900, 40) -- 1195
-			world:query(Rect(origin, size), function(body) -- 1196
-				local entity = body.entity -- 1197
-				if entity and Data:isEnemy(body, self) then -- 1198
-					do -- 1199
-						local _with_0 = body.data -- 1199
-						_with_0.hitPoint = body.position -- 1200
-						_with_0.hitPower = attackPower -- 1201
-						_with_0.hitFromRight = not self.faceRight -- 1202
-					end -- 1199
-					local factor = Data:getDamageFactor(damageType, entity.defenceType) -- 1203
-					local damage = (attackBase + attackBonus) * (attackFactor + factor) -- 1204
-					entity.hp = entity.hp - damage -- 1205
-				end -- 1198
-				return false -- 1206
-			end) -- 1196
-			while true do -- 1207
-				sleep() -- 1207
-			end -- 1207
-		end) -- 1191
-	end, -- 1180
-	stop = function(self) -- 1208
-		return self.playable:slot("AnimationEnd"):remove(spearAttackEnd) -- 1209
-	end -- 1208
-}) -- 1174
-local mutables = { -- 1212
-	"hp", -- 1212
-	"moveSpeed", -- 1213
-	"move", -- 1214
-	"jump", -- 1215
-	"targetAllow", -- 1216
-	"attackBase", -- 1217
-	"attackPower", -- 1218
-	"attackSpeed", -- 1219
-	"damageType", -- 1220
-	"attackBonus", -- 1221
-	"attackFactor", -- 1222
-	"attackTarget", -- 1223
-	"defenceType" -- 1224
-} -- 1211
-do -- 1227
-	local _with_0 = Observer("Add", { -- 1227
-		"unitDef", -- 1227
-		"position", -- 1227
-		"order", -- 1227
-		"group", -- 1227
-		"faceRight" -- 1227
-	}) -- 1227
-	_with_0:watch(function(self, unitDef, position, order, group) -- 1228
-		local player, faceRight, charSet, decisionTree = self.player, self.faceRight, self.charSet, self.decisionTree -- 1229
-		world = Store.world -- 1230
-		local func = UnitDefFuncs[unitDef] -- 1231
-		local def = func() -- 1232
-		for _index_0 = 1, #mutables do -- 1233
-			local var = mutables[_index_0] -- 1233
-			self[var] = def[var] -- 1234
-		end -- 1233
-		if charSet then -- 1235
-			local set = characters[charSet] -- 1236
-			local actions = def.actions -- 1237
-			local actionSet -- 1238
-			do -- 1238
-				local _tbl_0 = { } -- 1238
-				for _index_0 = 1, #actions do -- 1238
-					local a = actions[_index_0] -- 1238
-					_tbl_0[a] = true -- 1238
-				end -- 1238
-				actionSet = _tbl_0 -- 1238
-			end -- 1238
-			for _index_0 = 1, #itemSlots do -- 1239
-				local slot = itemSlots[_index_0] -- 1239
-				local item = set[slot] -- 1240
-				if not item then -- 1241
-					goto _continue_0 -- 1241
-				end -- 1241
-				local skill = itemSettings[item].skill -- 1242
-				if skill and not actionSet[skill] then -- 1243
-					actions:add(skill) -- 1244
-				end -- 1243
-				local attackRange = itemSettings[item].attackRange -- 1245
-				if attackRange then -- 1246
-					def.attackRange = attackRange -- 1246
-				end -- 1246
-				::_continue_0:: -- 1240
-			end -- 1239
-		end -- 1235
-		if decisionTree then -- 1247
-			def.decisionTree = decisionTree -- 1247
-		end -- 1247
-		local unit -- 1248
-		do -- 1248
-			local _with_1 = Unit(def, world, self, position) -- 1248
-			_with_1.group = group -- 1249
-			_with_1.order = order -- 1250
-			_with_1.faceRight = faceRight -- 1251
-			_with_1:addTo(world) -- 1252
-			unit = _with_1 -- 1248
-		end -- 1248
-		if charSet then -- 1253
-			updateModel(unit.playable, characters[charSet]) -- 1253
-		end -- 1253
-		if player then -- 1254
-			world.camera.followTarget = unit -- 1255
+						_with_4.visible = not show -- 930
+					end -- 927
+					_with_4:gslot("ShowFight", showItems) -- 931
+					_with_4:gslot("ShowTraining", showItems) -- 932
+					_with_4:slot("Tapped", function() -- 933
+						if not _with_4.visible then -- 934
+							return -- 934
+						end -- 934
+						for i = 1, #characters do -- 935
+							Entity({ -- 937
+								unitDef = "fighter", -- 937
+								charSet = i, -- 938
+								order = PlayerLayer, -- 939
+								position = Vec2(-600 + (i - 1) * 200, 400), -- 940
+								group = PlayerGroup, -- 941
+								faceRight = true, -- 942
+								decisionTree = "AI_Learned", -- 943
+								player = true -- 944
+							}) -- 936
+						end -- 935
+						Entity({ -- 946
+							unitDef = "boss", -- 946
+							order = EnemyLayer, -- 947
+							position = Vec2(400, 400), -- 948
+							group = EnemyGroup, -- 949
+							faceRight = false, -- 950
+							boss = true -- 951
+						}) -- 945
+						emit("ShowSetting", false) -- 952
+						return emit("ShowFight", true) -- 953
+					end) -- 933
+					return _with_4 -- 920
+				end)()) -- 920
+				return _with_3 -- 905
+			end)()) -- 905
+			return _with_2 -- 862
+		end)()) -- 862
+		return _with_1 -- 860
+	end)()) -- 860
+	do -- 954
+		local _exp_0 = App.platform -- 954
+		if "iOS" == _exp_0 or "Android" == _exp_0 or "Web" == _exp_0 then -- 955
+			_with_0:addChild((function() -- 956
+				local _with_1 = AlignNode() -- 956
+				_with_1:css("\n					width: auto;\n					height: 30%;\n					padding-bottom: 40;\n					margin: 0, 10, 0;\n					flex-direction: row;\n					justify-content: space-between\n				") -- 957
+				_with_1:gslot("ShowTraining", function(show) -- 965
+					_with_1.visible = show -- 965
+				end) -- 965
+				_with_1:addChild((function() -- 966
+					local _with_2 = AlignNode() -- 966
+					_with_2:css('height: 100%; width: 0') -- 967
+					_with_2:addChild((function() -- 968
+						local _with_3 = Menu() -- 968
+						_with_3.anchor = Vec2.zero -- 969
+						_with_3.size = Size(130, 60) -- 970
+						_with_3:addChild((function() -- 971
+							local _with_4 = CircleButton({ -- 972
+								text = "左", -- 972
+								radius = 60, -- 973
+								fontSize = math.floor(36) -- 974
+							}) -- 971
+							_with_4.scaleX = 0.5 -- 976
+							_with_4.scaleY = 0.5 -- 976
+							_with_4.anchor = Vec2.zero -- 977
+							_with_4:slot("TapBegan", function() -- 978
+								return updatePlayerControl("keyLeft", true) -- 978
+							end) -- 978
+							_with_4:slot("TapEnded", function() -- 979
+								return updatePlayerControl("keyLeft", false) -- 979
+							end) -- 979
+							return _with_4 -- 971
+						end)()) -- 971
+						_with_3:addChild((function() -- 980
+							local _with_4 = CircleButton({ -- 981
+								text = "右", -- 981
+								x = 70, -- 982
+								radius = 60, -- 983
+								fontSize = math.floor(36) -- 984
+							}) -- 980
+							_with_4.scaleX = 0.5 -- 986
+							_with_4.scaleY = 0.5 -- 986
+							_with_4.anchor = Vec2.zero -- 987
+							_with_4:slot("TapBegan", function() -- 988
+								return updatePlayerControl("keyRight", true) -- 988
+							end) -- 988
+							_with_4:slot("TapEnded", function() -- 989
+								return updatePlayerControl("keyRight", false) -- 989
+							end) -- 989
+							return _with_4 -- 980
+						end)()) -- 980
+						return _with_3 -- 968
+					end)()) -- 968
+					return _with_2 -- 966
+				end)()) -- 966
+				_with_1:addChild((function() -- 990
+					local _with_2 = AlignNode() -- 990
+					_with_2:css('height: 100%; width: 0') -- 991
+					_with_2:addChild((function() -- 992
+						local _with_3 = Menu() -- 992
+						_with_3.anchor = Vec2(1, 0) -- 993
+						_with_3.size = Size(200, 60) -- 994
+						_with_3:addChild((function() -- 995
+							local _with_4 = CircleButton({ -- 996
+								text = "闪", -- 996
+								radius = 60, -- 997
+								fontSize = math.floor(36) -- 998
+							}) -- 995
+							_with_4.scaleX = 0.5 -- 1000
+							_with_4.scaleY = 0.5 -- 1000
+							_with_4.anchor = Vec2.zero -- 1001
+							_with_4:slot("TapBegan", function() -- 1002
+								return updatePlayerControl("keyE", true) -- 1002
+							end) -- 1002
+							_with_4:slot("TapEnded", function() -- 1003
+								return updatePlayerControl("keyE", false) -- 1003
+							end) -- 1003
+							return _with_4 -- 995
+						end)()) -- 995
+						_with_3:addChild((function() -- 1004
+							local _with_4 = CircleButton({ -- 1005
+								text = "跳", -- 1005
+								x = 70, -- 1006
+								radius = 60, -- 1007
+								fontSize = math.floor(36) -- 1008
+							}) -- 1004
+							_with_4.scaleX = 0.5 -- 1010
+							_with_4.scaleY = 0.5 -- 1010
+							_with_4.anchor = Vec2.zero -- 1011
+							_with_4:slot("TapBegan", function() -- 1012
+								return updatePlayerControl("keyUp", true) -- 1012
+							end) -- 1012
+							_with_4:slot("TapEnded", function() -- 1013
+								return updatePlayerControl("keyUp", false) -- 1013
+							end) -- 1013
+							return _with_4 -- 1004
+						end)()) -- 1004
+						_with_3:addChild((function() -- 1014
+							local _with_4 = CircleButton({ -- 1015
+								text = "打", -- 1015
+								x = 140, -- 1016
+								radius = 60, -- 1017
+								fontSize = math.floor(36) -- 1018
+							}) -- 1014
+							_with_4.scaleX = 0.5 -- 1020
+							_with_4.scaleY = 0.5 -- 1020
+							_with_4.anchor = Vec2.zero -- 1021
+							_with_4:slot("TapBegan", function() -- 1022
+								return updatePlayerControl("keyF", true) -- 1022
+							end) -- 1022
+							_with_4:slot("TapEnded", function() -- 1023
+								return updatePlayerControl("keyF", false) -- 1023
+							end) -- 1023
+							return _with_4 -- 1014
+						end)()) -- 1014
+						return _with_3 -- 992
+					end)()) -- 992
+					return _with_2 -- 990
+				end)()) -- 990
+				return _with_1 -- 956
+			end)()) -- 956
+		end -- 954
+	end -- 954
+	if App.platform == "macOS" or App.platform == "Windows" or App.platform == "Linux" or App.platform == "Web" then -- 1024
+		local _with_1 = Node() -- 1025
+		_with_1:schedule(function() -- 1026
+			updatePlayerControl("keyLeft", Keyboard:isKeyPressed("A"), "keyboard") -- 1027
+			updatePlayerControl("keyRight", Keyboard:isKeyPressed("D"), "keyboard") -- 1028
+			updatePlayerControl("keyUp", Keyboard:isKeyPressed("K"), "keyboard") -- 1029
+			updatePlayerControl("keyF", Keyboard:isKeyPressed("J"), "keyboard") -- 1030
+			return updatePlayerControl("keyE", Keyboard:isKeyPressed("E"), "keyboard") -- 1031
+		end) -- 1026
+	end -- 1024
+	return _with_0 -- 847
+end)()) -- 847
+do -- 1033
+	local _with_0 = Node() -- 1033
+	_with_0:schedule(function() -- 1034
+		local width, height -- 1035
+		do -- 1035
+			local _obj_0 = App.visualSize -- 1035
+			width, height = _obj_0.width, _obj_0.height -- 1035
+		end -- 1035
+		for _index_0 = 1, #fighterPanels do -- 1036
+			local panel = fighterPanels[_index_0] -- 1036
+			panel() -- 1036
+		end -- 1036
+	end) -- 1034
+end -- 1033
+local rangeAttackEnd -- 1038
+rangeAttackEnd = function(name, playable) -- 1038
+	if name == "range" then -- 1039
+		return playable.parent:stop() -- 1039
+	end -- 1039
+end -- 1038
+UnitAction:add("range", { -- 1042
+	priority = 3, -- 1042
+	reaction = 10, -- 1043
+	recovery = 0.1, -- 1044
+	queued = true, -- 1045
+	available = function() -- 1046
+		return true -- 1046
+	end, -- 1046
+	create = function(self) -- 1047
+		local attackSpeed, targetAllow, attackPower, damageType, attackBase, attackBonus, attackFactor -- 1048
+		do -- 1048
+			local _obj_0 = self.entity -- 1053
+			attackSpeed, targetAllow, attackPower, damageType, attackBase, attackBonus, attackFactor = _obj_0.attackSpeed, _obj_0.targetAllow, _obj_0.attackPower, _obj_0.damageType, _obj_0.attackBase, _obj_0.attackBonus, _obj_0.attackFactor -- 1048
+		end -- 1048
+		do -- 1054
+			local _with_0 = self.playable -- 1054
+			_with_0.speed = attackSpeed -- 1055
+			_with_0:play("range") -- 1056
+			_with_0:slot("AnimationEnd", rangeAttackEnd) -- 1057
+		end -- 1054
+		return once(function(self) -- 1058
+			local bulletDef = Store[self.unitDef.bulletType] -- 1059
+			local onAttack -- 1060
+			onAttack = function() -- 1060
+				local _with_0 = Bullet(bulletDef, self) -- 1061
+				_with_0.targetAllow = targetAllow -- 1062
+				_with_0:slot("HitTarget", function(bullet, target, pos) -- 1063
+					do -- 1064
+						local _with_1 = target.data -- 1064
+						_with_1.hitPoint = pos -- 1065
+						_with_1.hitPower = attackPower -- 1066
+						_with_1.hitFromRight = bullet.velocityX < 0 -- 1067
+					end -- 1064
+					local entity = target.entity -- 1068
+					local factor = Data:getDamageFactor(damageType, entity.defenceType) -- 1069
+					local damage = (attackBase + attackBonus) * (attackFactor + factor) -- 1070
+					entity.hp = entity.hp - damage -- 1071
+					bullet.hitStop = true -- 1072
+				end) -- 1063
+				_with_0:addTo(self.world, self.order) -- 1073
+				return _with_0 -- 1061
+			end -- 1060
+			sleep(0.5 * 28.0 / 30.0 / attackSpeed) -- 1074
+			onAttack() -- 1075
+			while true do -- 1076
+				sleep() -- 1076
+			end -- 1076
+		end) -- 1058
+	end, -- 1047
+	stop = function(self) -- 1077
+		return self.playable:slot("AnimationEnd"):remove(rangeAttackEnd) -- 1078
+	end -- 1077
+}) -- 1041
+local BigArrow -- 1080
+do -- 1080
+	local _with_0 = BulletDef() -- 1080
+	_with_0.tag = "" -- 1081
+	_with_0.endEffect = "" -- 1082
+	_with_0.lifeTime = 5 -- 1083
+	_with_0.damageRadius = 0 -- 1084
+	_with_0.highSpeedFix = false -- 1085
+	_with_0.gravity = Vec2(0, -10) -- 1086
+	_with_0.face = Face("Model/patreon.clip|item_arrow", Vec2(-100, 0), 2) -- 1087
+	_with_0:setAsCircle(10) -- 1088
+	_with_0:setVelocity(25, 800) -- 1089
+	BigArrow = _with_0 -- 1080
+end -- 1080
+UnitAction:add("multiArrow", { -- 1092
+	priority = 3, -- 1092
+	reaction = 10, -- 1093
+	recovery = 0.1, -- 1094
+	queued = true, -- 1095
+	available = function() -- 1096
+		return true -- 1096
+	end, -- 1096
+	create = function(self) -- 1097
+		local attackSpeed, targetAllow, attackPower, damageType, attackBase, attackBonus, attackFactor -- 1098
+		do -- 1098
+			local _obj_0 = self.entity -- 1103
+			attackSpeed, targetAllow, attackPower, damageType, attackBase, attackBonus, attackFactor = _obj_0.attackSpeed, _obj_0.targetAllow, _obj_0.attackPower, _obj_0.damageType, _obj_0.attackBase, _obj_0.attackBonus, _obj_0.attackFactor -- 1098
+		end -- 1098
+		do -- 1104
+			local _with_0 = self.playable -- 1104
+			_with_0.speed = attackSpeed -- 1105
+			_with_0:play("range") -- 1106
+			_with_0:slot("AnimationEnd", rangeAttackEnd) -- 1107
+		end -- 1104
+		return once(function(self) -- 1108
+			local onAttack -- 1109
+			onAttack = function(angle, speed) -- 1109
+				BigArrow:setVelocity(angle, speed) -- 1110
+				local _with_0 = Bullet(BigArrow, self) -- 1111
+				_with_0.targetAllow = targetAllow -- 1112
+				_with_0:slot("HitTarget", function(bullet, target, pos) -- 1113
+					do -- 1114
+						local _with_1 = target.data -- 1114
+						_with_1.hitPoint = pos -- 1115
+						_with_1.hitPower = attackPower -- 1116
+						_with_1.hitFromRight = bullet.velocityX < 0 -- 1117
+					end -- 1114
+					local entity = target.entity -- 1118
+					local factor = Data:getDamageFactor(damageType, entity.defenceType) -- 1119
+					local damage = (attackBase + attackBonus) * (attackFactor + factor) -- 1120
+					entity.hp = entity.hp - damage -- 1121
+					bullet.hitStop = true -- 1122
+				end) -- 1113
+				_with_0:addTo(self.world, self.order) -- 1123
+				return _with_0 -- 1111
+			end -- 1109
+			sleep(30.0 / 60.0 / attackSpeed) -- 1124
+			onAttack(30, 1100) -- 1125
+			onAttack(10, 1000) -- 1126
+			onAttack(-10, 900) -- 1127
+			onAttack(-30, 800) -- 1128
+			onAttack(-50, 700) -- 1129
+			while true do -- 1130
+				sleep() -- 1130
+			end -- 1130
+		end) -- 1108
+	end, -- 1097
+	stop = function(self) -- 1131
+		return self.playable:slot("AnimationEnd"):remove(rangeAttackEnd) -- 1132
+	end -- 1131
+}) -- 1091
+UnitAction:add("fallOff", { -- 1135
+	priority = 1, -- 1135
+	reaction = 1, -- 1136
+	recovery = 0, -- 1137
+	available = function(self) -- 1138
+		return not self.onSurface -- 1138
+	end, -- 1138
+	create = function(self) -- 1139
+		if self.velocityY <= 0 then -- 1140
+			self.data.fallDown = true -- 1141
+			local _with_0 = self.playable -- 1142
+			_with_0.speed = 2.5 -- 1143
+			_with_0:play("idle") -- 1144
+		else -- 1145
+			self.data.fallDown = false -- 1145
+		end -- 1140
+		return function(self) -- 1146
+			if self.onSurface then -- 1147
+				return true -- 1147
+			end -- 1147
+			if not self.data.fallDown and self.velocityY <= 0 then -- 1148
+				self.data.fallDown = true -- 1149
+				local _with_0 = self.playable -- 1150
+				_with_0.speed = 2.5 -- 1151
+				_with_0:play("idle") -- 1152
+			end -- 1148
+			return false -- 1153
+		end -- 1146
+	end -- 1139
+}) -- 1134
+UnitAction:add("evade", { -- 1156
+	priority = 10, -- 1156
+	reaction = 10, -- 1157
+	recovery = 0, -- 1158
+	queued = true, -- 1159
+	available = function() -- 1160
+		return true -- 1160
+	end, -- 1160
+	create = function(self) -- 1161
+		do -- 1162
+			local _with_0 = self.playable -- 1162
+			_with_0.speed = 1.0 -- 1163
+			_with_0.recovery = 0.0 -- 1164
+			_with_0:play("bevade") -- 1165
+		end -- 1162
+		return once(function(self) -- 1166
+			local group = self.group -- 1167
+			self.group = Data.groupHide -- 1168
+			local dir = self.faceRight and -1 or 1 -- 1169
+			cycle(0.2, function() -- 1170
+				self.velocityX = 800 * dir -- 1170
+			end) -- 1170
+			self.group = group -- 1171
+			do -- 1172
+				local _with_0 = self.playable -- 1172
+				_with_0.speed = 1.0 -- 1173
+				_with_0:play("idle") -- 1174
+			end -- 1172
+			sleep(1) -- 1175
+			return true -- 1176
+		end) -- 1166
+	end -- 1161
+}) -- 1155
+local spearAttackEnd -- 1178
+spearAttackEnd = function(name, playable) -- 1178
+	if name == "spear" then -- 1179
+		return playable.parent:stop() -- 1179
+	end -- 1179
+end -- 1178
+UnitAction:add("spearAttack", { -- 1182
+	priority = 3, -- 1182
+	reaction = 10, -- 1183
+	recovery = 0.1, -- 1184
+	queued = true, -- 1185
+	available = function() -- 1186
+		return true -- 1186
+	end, -- 1186
+	create = function(self) -- 1187
+		local attackSpeed, attackPower, damageType, attackBase, attackBonus, attackFactor -- 1188
+		do -- 1188
+			local _obj_0 = self.entity -- 1192
+			attackSpeed, attackPower, damageType, attackBase, attackBonus, attackFactor = _obj_0.attackSpeed, _obj_0.attackPower, _obj_0.damageType, _obj_0.attackBase, _obj_0.attackBonus, _obj_0.attackFactor -- 1188
+		end -- 1188
+		do -- 1193
+			local _with_0 = self.playable -- 1193
+			_with_0.speed = attackSpeed -- 1194
+			_with_0.recovery = 0.2 -- 1195
+			_with_0:play("spear") -- 1196
+			_with_0:slot("AnimationEnd", spearAttackEnd) -- 1197
+		end -- 1193
+		return once(function(self) -- 1198
+			sleep(50.0 / 60.0) -- 1199
+			local dir = self.faceRight and 0 or -900 -- 1200
+			local origin = self.position - Vec2(0, 205) + Vec2(dir, 0) -- 1201
+			local size = Size(900, 40) -- 1202
+			world:query(Rect(origin, size), function(body) -- 1203
+				local entity = body.entity -- 1204
+				if entity and Data:isEnemy(body, self) then -- 1205
+					do -- 1206
+						local _with_0 = body.data -- 1206
+						_with_0.hitPoint = body.position -- 1207
+						_with_0.hitPower = attackPower -- 1208
+						_with_0.hitFromRight = not self.faceRight -- 1209
+					end -- 1206
+					local factor = Data:getDamageFactor(damageType, entity.defenceType) -- 1210
+					local damage = (attackBase + attackBonus) * (attackFactor + factor) -- 1211
+					entity.hp = entity.hp - damage -- 1212
+				end -- 1205
+				return false -- 1213
+			end) -- 1203
+			while true do -- 1214
+				sleep() -- 1214
+			end -- 1214
+		end) -- 1198
+	end, -- 1187
+	stop = function(self) -- 1215
+		return self.playable:slot("AnimationEnd"):remove(spearAttackEnd) -- 1216
+	end -- 1215
+}) -- 1181
+local mutables = { -- 1219
+	"hp", -- 1219
+	"moveSpeed", -- 1220
+	"move", -- 1221
+	"jump", -- 1222
+	"targetAllow", -- 1223
+	"attackBase", -- 1224
+	"attackPower", -- 1225
+	"attackSpeed", -- 1226
+	"damageType", -- 1227
+	"attackBonus", -- 1228
+	"attackFactor", -- 1229
+	"attackTarget", -- 1230
+	"defenceType" -- 1231
+} -- 1218
+do -- 1234
+	local _with_0 = Observer("Add", { -- 1234
+		"unitDef", -- 1234
+		"position", -- 1234
+		"order", -- 1234
+		"group", -- 1234
+		"faceRight" -- 1234
+	}) -- 1234
+	_with_0:watch(function(self, unitDef, position, order, group) -- 1235
+		local player, faceRight, charSet, decisionTree = self.player, self.faceRight, self.charSet, self.decisionTree -- 1236
+		world = Store.world -- 1237
+		local func = UnitDefFuncs[unitDef] -- 1238
+		local def = func() -- 1239
+		for _index_0 = 1, #mutables do -- 1240
+			local var = mutables[_index_0] -- 1240
+			self[var] = def[var] -- 1241
+		end -- 1240
+		if charSet then -- 1242
+			local set = characters[charSet] -- 1243
+			local actions = def.actions -- 1244
+			local actionSet -- 1245
+			do -- 1245
+				local _tbl_0 = { } -- 1245
+				for _index_0 = 1, #actions do -- 1245
+					local a = actions[_index_0] -- 1245
+					_tbl_0[a] = true -- 1245
+				end -- 1245
+				actionSet = _tbl_0 -- 1245
+			end -- 1245
+			for _index_0 = 1, #itemSlots do -- 1246
+				local slot = itemSlots[_index_0] -- 1246
+				local item = set[slot] -- 1247
+				if not item then -- 1248
+					goto _continue_0 -- 1248
+				end -- 1248
+				local skill = itemSettings[item].skill -- 1249
+				if skill and not actionSet[skill] then -- 1250
+					actions:add(skill) -- 1251
+				end -- 1250
+				local attackRange = itemSettings[item].attackRange -- 1252
+				if attackRange then -- 1253
+					def.attackRange = attackRange -- 1253
+				end -- 1253
+				::_continue_0:: -- 1247
+			end -- 1246
+		end -- 1242
+		if decisionTree then -- 1254
+			def.decisionTree = decisionTree -- 1254
 		end -- 1254
-		return false -- 1228
-	end) -- 1228
-end -- 1227
-local _with_0 = Observer("Change", { -- 1257
-	"hp", -- 1257
-	"unit" -- 1257
-}) -- 1257
-_with_0:watch(function(self, hp, unit) -- 1258
-	local boss = self.boss -- 1259
-	local lastHp = self.oldValues.hp -- 1260
-	if hp < lastHp then -- 1261
-		if not boss and unit:isDoing("hit") then -- 1262
-			unit:start("cancel") -- 1262
-		end -- 1262
-		if boss then -- 1263
-			local _with_1 = Visual("Particle/bloodp.par") -- 1264
-			_with_1.position = unit.data.hitPoint -- 1265
-			_with_1:addTo(world, unit.order) -- 1266
-			_with_1:autoRemove() -- 1267
-			_with_1:start() -- 1268
-		end -- 1263
-		if hp > 0 then -- 1269
-			unit:start("hit") -- 1270
-		else -- 1272
-			unit:start("hit") -- 1272
-			unit:start("fall") -- 1273
-			unit.group = Data.groupHide -- 1274
-			if self.player then -- 1275
-				playerGroup:each(function(p) -- 1276
-					if p and p.unit and p.hp > 0 then -- 1277
-						world.camera.followTarget = p.unit -- 1278
-						return true -- 1279
-					else -- 1280
-						return false -- 1280
-					end -- 1277
-				end) -- 1276
-			end -- 1275
+		local unit -- 1255
+		do -- 1255
+			local _with_1 = Unit(def, world, self, position) -- 1255
+			_with_1.group = group -- 1256
+			_with_1.order = order -- 1257
+			_with_1.faceRight = faceRight -- 1258
+			_with_1:addTo(world) -- 1259
+			unit = _with_1 -- 1255
+		end -- 1255
+		if charSet then -- 1260
+			updateModel(unit.playable, characters[charSet]) -- 1260
+		end -- 1260
+		if player then -- 1261
+			world.camera.followTarget = unit -- 1262
+		end -- 1261
+		return false -- 1235
+	end) -- 1235
+end -- 1234
+local _with_0 = Observer("Change", { -- 1264
+	"hp", -- 1264
+	"unit" -- 1264
+}) -- 1264
+_with_0:watch(function(self, hp, unit) -- 1265
+	local boss = self.boss -- 1266
+	local lastHp = self.oldValues.hp -- 1267
+	if hp < lastHp then -- 1268
+		if not boss and unit:isDoing("hit") then -- 1269
+			unit:start("cancel") -- 1269
 		end -- 1269
-	end -- 1261
-	return false -- 1258
-end) -- 1258
-return _with_0 -- 1257
+		if boss then -- 1270
+			local _with_1 = Visual("Particle/bloodp.par") -- 1271
+			_with_1.position = unit.data.hitPoint -- 1272
+			_with_1:addTo(world, unit.order) -- 1273
+			_with_1:autoRemove() -- 1274
+			_with_1:start() -- 1275
+		end -- 1270
+		if hp > 0 then -- 1276
+			unit:start("hit") -- 1277
+		else -- 1279
+			unit:start("hit") -- 1279
+			unit:start("fall") -- 1280
+			unit.group = Data.groupHide -- 1281
+			if self.player then -- 1282
+				playerGroup:each(function(p) -- 1283
+					if p and p.unit and p.hp > 0 then -- 1284
+						world.camera.followTarget = p.unit -- 1285
+						return true -- 1286
+					else -- 1287
+						return false -- 1287
+					end -- 1284
+				end) -- 1283
+			end -- 1282
+		end -- 1276
+	end -- 1268
+	return false -- 1265
+end) -- 1265
+return _with_0 -- 1264

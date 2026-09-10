@@ -835,7 +835,14 @@ for i = 1, #characters
 	table.insert fighterPanels, fighterPanel
 
 playerGroup = Group ["player","unit"]
-updatePlayerControl = (key,flag) -> playerGroup\each => @unit.data[key] = flag
+playerInput = {keyboard: {}, virtual: {}}
+updatePlayerControl = (key, flag, source = "virtual") ->
+	playerInput[source][key] = flag
+	playerGroup\each => @unit.data[key] = (playerInput.keyboard[key] or playerInput.virtual[key]) == true
+Director.ui\gslot "ShowTraining", ->
+	for source in *{"keyboard", "virtual"}
+		for key in *{"keyLeft", "keyRight", "keyUp", "keyF", "keyE"}
+			updatePlayerControl key, false, source
 
 Director.ui\addChild with AlignNode true
 	\css 'flex-direction: column'
@@ -1014,14 +1021,14 @@ Director.ui\addChild with AlignNode true
 							.anchor = Vec2.zero
 							\slot "TapBegan", -> updatePlayerControl "keyF",true
 							\slot "TapEnded", -> updatePlayerControl "keyF",false
-		when "macOS","Windows","Linux"
-			with Node!
-				\schedule ->
-					updatePlayerControl "keyLeft", Keyboard\isKeyPressed "A"
-					updatePlayerControl "keyRight", Keyboard\isKeyPressed "D"
-					updatePlayerControl "keyUp", Keyboard\isKeyPressed "K"
-					updatePlayerControl "keyF", Keyboard\isKeyPressed "J"
-					updatePlayerControl "keyE", Keyboard\isKeyPressed "E"
+	if App.platform == "macOS" or App.platform == "Windows" or App.platform == "Linux" or App.platform == "Web"
+		with Node!
+			\schedule ->
+				updatePlayerControl "keyLeft", Keyboard\isKeyPressed("A"), "keyboard"
+				updatePlayerControl "keyRight", Keyboard\isKeyPressed("D"), "keyboard"
+				updatePlayerControl "keyUp", Keyboard\isKeyPressed("K"), "keyboard"
+				updatePlayerControl "keyF", Keyboard\isKeyPressed("J"), "keyboard"
+				updatePlayerControl "keyE", Keyboard\isKeyPressed("E"), "keyboard"
 
 with Node!
 	\schedule ->
