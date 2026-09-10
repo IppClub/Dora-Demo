@@ -1140,7 +1140,7 @@ Director.ui:addChild((function() -- 840
 			local isPC -- 847
 			do -- 847
 				local _exp_0 = App.platform -- 847
-				if "macOS" == _exp_0 or "Windows" == _exp_0 or "Linux" == _exp_0 then -- 848
+				if "macOS" == _exp_0 or "Windows" == _exp_0 or "Linux" == _exp_0 or "Web" == _exp_0 then -- 848
 					isPC = true -- 848
 				else -- 849
 					isPC = false -- 849
@@ -1313,7 +1313,7 @@ Director.ui:addChild((function() -- 840
 		return _with_1 -- 853
 	end)()) -- 853
 	local _exp_0 = App.platform -- 947
-	if "iOS" == _exp_0 or "Android" == _exp_0 then -- 948
+	if "iOS" == _exp_0 or "Android" == _exp_0 or "Web" == _exp_0 then -- 948
 		_with_0:addChild((function() -- 949
 			local _with_1 = AlignNode() -- 949
 			_with_1:css("\n					width: auto;\n					height: 30%;\n					padding-bottom: 40;\n					margin: 0, 10, 0;\n					flex-direction: row;\n					justify-content: space-between\n				") -- 950

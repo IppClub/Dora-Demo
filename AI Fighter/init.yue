@@ -845,7 +845,7 @@ Director.ui\addChild with AlignNode true
 		SetNextWindowSize Vec2(350, 160), "FirstUseEver"
 		Begin "AI军团", ["NoResize", "NoSavedSettings"], ->
 			isPC = switch App.platform
-				when "macOS", "Windows", "Linux" then true
+				when "macOS", "Windows", "Linux", "Web" then true
 				else false
 			TextWrapped "点击你的学员部队配备装备，并亲自进行战斗方法的训练，最后带领部队挑战敌人。\n学员战斗AI通过玩家操作自动学习生成。#{isPC and '训练操作按键：向左A，向右D，闪避E，攻击J，跳跃K' or ''}"
 	\addChild with AlignNode!
@@ -945,7 +945,7 @@ Director.ui\addChild with AlignNode true
 						emit "ShowSetting", false
 						emit "ShowFight", true
 	switch App.platform
-		when "iOS", "Android"
+		when "iOS", "Android", "Web"
 			\addChild with AlignNode!
 				\css "
 					width: auto;
