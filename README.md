@@ -26,6 +26,8 @@ Each demo in this repository highlights different features of Dora SSR. Examples
 
 Each demo is organized in its folder with source files, assets.
 
+- [Fruit 2048](Fruit%202048/README.md): a portrait-friendly puzzle with procedural fruit artwork, swipe and keyboard controls, merge animations, and persistent best scores.
+
 ## Getting Started
 
 To run these demos:
