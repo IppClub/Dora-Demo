@@ -8,6 +8,7 @@ import { Content, Director, Node } from 'Dora';
 import { joinPath } from 'Game/Save';
 import { DIR_LEFT, DIR_UP } from 'Game/FruitBoard';
 import { COLS, FruitGame, ROWS } from 'Game/FruitGame';
+import { SCREEN_MARGIN } from 'Game/Theme';
 
 /** 生成全空棋盘数值表。 */
 function emptyValues(): number[] {
@@ -38,6 +39,18 @@ export function runTests(): string {
 	game.layout(360, 640);
 	check(game.hud.hintLabel !== undefined && game.hud.hintLabel.text.length > 0, '场景：操作提示应可见');
 	check(game.hud.restartButton.width === 168, '场景：重开按钮应可点击');
+	game.layout(783, 639);
+	check(
+		game.hud.hintLabel !== undefined
+			&& game.hud.restartButton.position.x === 0
+			&& game.hud.hintLabel.position.x === 0
+			&& game.hud.restartButton.position.y > game.hud.hintLabel.position.y,
+		'场景：短横屏下重开按钮应居中且提示位于下方',
+	);
+	check(game.boardView.boardBottomY() >= game.hud.restartButton.position.y + 22, '场景：重开按钮不应遮挡棋盘');
+	const scoreCardsBottomY = 639 / 2 - SCREEN_MARGIN - 132;
+	check(game.boardView.root.position.y + game.boardView.boardSize / 2 <= scoreCardsBottomY - 12, '场景：评分卡片不应遮挡棋盘');
+	game.layout(360, 640);
 	check(ROWS === 4 && COLS === 4, '场景：棋盘规格应为 4×4');
 	check(game.board.rows === 4 && game.board.cols === 4, '场景：逻辑棋盘应为 4×4');
 	check(game.boardView.tiles.length === 2, '场景：开局应有 2 个水果瓦片');

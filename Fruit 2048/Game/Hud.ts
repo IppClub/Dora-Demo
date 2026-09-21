@@ -62,7 +62,7 @@ export class Hud {
 		return label;
 	}
 
-	layout(viewWidth: number, viewHeight: number, boardBottomY: number): void {
+	layout(viewWidth: number, viewHeight: number): void {
 		const halfWidth = viewWidth / 2;
 		const halfHeight = viewHeight / 2;
 		const topY = halfHeight - SCREEN_MARGIN;
@@ -80,8 +80,8 @@ export class Hud {
 		if (this.scoreValueLabel) this.scoreValueLabel.position = Vec2(-78, centerY - 11);
 		if (this.bestLabel) this.bestLabel.position = Vec2(78, centerY + 13);
 		if (this.bestValueLabel) this.bestValueLabel.position = Vec2(78, centerY - 11);
-		if (this.hintLabel) this.hintLabel.position = Vec2(0, boardBottomY - 16);
-		this.restartButton.position = Vec2(0, -halfHeight + 50);
+		this.restartButton.position = Vec2(0, -halfHeight + 54);
+		if (this.hintLabel) this.hintLabel.position = Vec2(0, -halfHeight + 18);
 	}
 
 	setScore(score: number): void {

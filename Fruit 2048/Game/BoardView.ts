@@ -194,13 +194,21 @@ export class BoardView {
 		const availWidth = viewWidth - margin * 2;
 		const availHeight = viewHeight - HUD_HEIGHT - margin * 2;
 		let cell = Math.floor(Math.min(availWidth, availHeight) / this.cols);
+		const defaultCenterY = (margin - HUD_HEIGHT) / 2 + 40;
+		const defaultBoardSize = cell * this.cols;
+		const boardTopY = Math.min(
+			defaultCenterY + defaultBoardSize / 2,
+			viewHeight / 2 - margin - 144,
+		);
+		const footerTopY = -viewHeight / 2 + 88;
+		cell = Math.min(cell, Math.floor((boardTopY - footerTopY) / this.cols));
 		if (cell < 24) {
 			cell = 24;
 		}
 		this.cellSize = cell;
 		this.boardSize = cell * this.cols;
 		this.root.size = Size(this.boardSize, this.boardSize);
-		this.root.position = Vec2(0, (margin - HUD_HEIGHT) / 2 + 40);
+		this.root.position = Vec2(0, boardTopY - this.boardSize / 2);
 		this.redrawPanel();
 		this.effects.layout(viewWidth, viewHeight);
 		for (let i = 0; i < this.tiles.length; i++) {

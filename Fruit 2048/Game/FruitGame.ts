@@ -113,7 +113,7 @@ export class FruitGame {
 			Vec2(-halfW, 0),
 		], COLOR_BG_BOTTOM);
 		this.boardView.layout(viewWidth, viewHeight);
-		this.hud.layout(viewWidth, viewHeight, this.boardView.boardBottomY());
+		this.hud.layout(viewWidth, viewHeight);
 		const centerY = this.boardView.root.position.y;
 		if (this.gameOverTitle) {
 			this.gameOverTitle.position = Vec2(0, centerY + 8);

@@ -107,11 +107,7 @@ function FruitGame.prototype.layout(self, viewWidth, viewHeight) -- 97
 		COLOR_BG_BOTTOM -- 114
 	) -- 114
 	self.boardView:layout(viewWidth, viewHeight) -- 115
-	self.hud:layout( -- 116
-		viewWidth, -- 116
-		viewHeight, -- 116
-		self.boardView:boardBottomY() -- 116
-	) -- 116
+	self.hud:layout(viewWidth, viewHeight) -- 116
 	local centerY = self.boardView.root.position.y -- 117
 	if self.gameOverTitle then -- 117
 		self.gameOverTitle.position = Vec2(0, centerY + 8) -- 119

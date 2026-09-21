@@ -130,7 +130,7 @@ function Hud.prototype.makeLabel(self, text, size, color, anchor) -- 53
 	label:addTo(self.root) -- 61
 	return label -- 62
 end -- 53
-function Hud.prototype.layout(self, viewWidth, viewHeight, boardBottomY) -- 65
+function Hud.prototype.layout(self, viewWidth, viewHeight) -- 65
 	local halfWidth = viewWidth / 2 -- 66
 	local halfHeight = viewHeight / 2 -- 67
 	local topY = halfHeight - SCREEN_MARGIN -- 68
@@ -176,10 +176,10 @@ function Hud.prototype.layout(self, viewWidth, viewHeight, boardBottomY) -- 65
 	if self.bestValueLabel then -- 81
 		self.bestValueLabel.position = Vec2(78, centerY - 11) -- 82
 	end -- 82
-	if self.hintLabel then -- 82
-		self.hintLabel.position = Vec2(0, boardBottomY - 16) -- 83
-	end -- 83
-	self.restartButton.position = Vec2(0, -halfHeight + 50) -- 84
+	self.restartButton.position = Vec2(0, -halfHeight + 54) -- 83
+	if self.hintLabel then -- 83
+		self.hintLabel.position = Vec2(0, -halfHeight + 18) -- 84
+	end -- 84
 end -- 65
 function Hud.prototype.setScore(self, score) -- 87
 	if self.scoreValueLabel then -- 87

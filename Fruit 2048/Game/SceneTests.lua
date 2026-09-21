@@ -15,6 +15,8 @@ local ____FruitGame = require("Game.FruitGame") -- 10
 local COLS = ____FruitGame.COLS -- 10
 local FruitGame = ____FruitGame.FruitGame -- 10
 local ROWS = ____FruitGame.ROWS -- 10
+local ____Theme = require("Game.Theme")
+local SCREEN_MARGIN = ____Theme.SCREEN_MARGIN
 --- 生成全空棋盘数值表。
 local function emptyValues() -- 13
 	local values = {} -- 14
@@ -47,6 +49,15 @@ function ____exports.runTests() -- 21
 	game:layout(360, 640) -- 38
 	check(game.hud.hintLabel ~= nil and #game.hud.hintLabel.text > 0, "场景：操作提示应可见") -- 39
 	check(game.hud.restartButton.width == 168, "场景：重开按钮应可点击") -- 40
+	game:layout(783, 639) -- 41
+	check( -- 42
+		game.hud.hintLabel ~= nil and game.hud.restartButton.position.x == 0 and game.hud.hintLabel.position.x == 0 and game.hud.restartButton.position.y > game.hud.hintLabel.position.y, -- 42
+		"场景：短横屏下重开按钮应居中且提示位于下方" -- 42
+	) -- 42
+	check(game.boardView:boardBottomY() >= game.hud.restartButton.position.y + 22, "场景：重开按钮不应遮挡棋盘") -- 43
+	local scoreCardsBottomY = 639 / 2 - SCREEN_MARGIN - 132 -- 44
+	check(game.boardView.root.position.y + game.boardView.boardSize / 2 <= scoreCardsBottomY - 12, "场景：评分卡片不应遮挡棋盘") -- 45
+	game:layout(360, 640) -- 43
 	check(ROWS == 4 and COLS == 4, "场景：棋盘规格应为 4×4") -- 41
 	check(game.board.rows == 4 and game.board.cols == 4, "场景：逻辑棋盘应为 4×4") -- 42
 	check(#game.boardView.tiles == 2, "场景：开局应有 2 个水果瓦片") -- 43

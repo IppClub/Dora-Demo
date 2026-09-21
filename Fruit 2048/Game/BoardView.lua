@@ -156,13 +156,18 @@ function BoardView.prototype.layout(self, viewWidth, viewHeight) -- 192
 	local availWidth = viewWidth - margin * 2 -- 194
 	local availHeight = viewHeight - HUD_HEIGHT - margin * 2 -- 195
 	local cell = math.floor(math.min(availWidth, availHeight) / self.cols) -- 196
+	local defaultCenterY = (margin - HUD_HEIGHT) / 2 + 40 -- 197
+	local defaultBoardSize = cell * self.cols -- 198
+	local boardTopY = math.min(defaultCenterY + defaultBoardSize / 2, viewHeight / 2 - margin - 144) -- 202
+	local footerTopY = -viewHeight / 2 + 88 -- 203
+	cell = math.min(cell, math.floor((boardTopY - footerTopY) / self.cols)) -- 204
 	if cell < 24 then -- 196
 		cell = 24 -- 198
 	end -- 198
 	self.cellSize = cell -- 200
 	self.boardSize = cell * self.cols -- 201
 	self.root.size = Size(self.boardSize, self.boardSize) -- 202
-	self.root.position = Vec2(0, (margin - HUD_HEIGHT) / 2 + 40) -- 203
+	self.root.position = Vec2(0, boardTopY - self.boardSize / 2) -- 211
 	self:redrawPanel() -- 204
 	self.effects:layout(viewWidth, viewHeight) -- 205
 	do -- 205
