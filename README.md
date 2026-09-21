@@ -27,6 +27,8 @@ Each demo in this repository highlights different features of Dora SSR. Examples
 Each demo is organized in its folder with source files, assets.
 
 - [Fruit 2048](Fruit%202048/README.md): a portrait-friendly puzzle with procedural fruit artwork, swipe and keyboard controls, merge animations, and persistent best scores.
+- [Strange Snake](Strange%20Snake/README.md): a neon snake-and-breakout arcade game with paddle aiming, one random food target, and mouse, keyboard, and touch controls.
+- [Cloud Cruise](Cloud%20Cruise/README.md): an inertial flight game with altitude holding, independently moving gates, capped difficulty progression, and portrait/landscape layouts.
 
 ## Getting Started
 
